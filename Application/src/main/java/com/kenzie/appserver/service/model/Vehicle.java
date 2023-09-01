@@ -1,10 +1,10 @@
 package com.kenzie.appserver.service.model;
 
-public class Example {
+public class Vehicle {
     private final String id;
     private final String name;
 
-    public Example(String id, String name) {
+    public Vehicle(String id, String name) {
         this.id = id;
         this.name = name;
     }

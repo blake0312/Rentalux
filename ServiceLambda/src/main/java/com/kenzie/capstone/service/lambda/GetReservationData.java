@@ -1,6 +1,6 @@
 package com.kenzie.capstone.service.lambda;
 
-import com.kenzie.capstone.service.LambdaService;
+import com.kenzie.capstone.service.ReservationService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
 import com.kenzie.capstone.service.model.ExampleData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SetExampleData implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
+public class GetReservationData implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     static final Logger log = LogManager.getLogger();
 
@@ -29,23 +29,23 @@ public class SetExampleData implements RequestHandler<APIGatewayProxyRequestEven
         log.info(gson.toJson(input));
 
         ServiceComponent serviceComponent = DaggerServiceComponent.create();
-        LambdaService lambdaService = serviceComponent.provideLambdaService();
+        ReservationService reservationService = serviceComponent.provideLambdaService();
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
 
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
-        String data = input.getBody();
+        String id = input.getPathParameters().get("id");
 
-        if (data == null || data.length() == 0) {
+        if (id == null || id.length() == 0) {
             return response
                     .withStatusCode(400)
-                    .withBody("data is invalid");
+                    .withBody("Id is invalid");
         }
 
         try {
-            ExampleData exampleData = lambdaService.setExampleData(data);
+            ExampleData exampleData = reservationService.getExampleData(id);
             String output = gson.toJson(exampleData);
 
             return response
