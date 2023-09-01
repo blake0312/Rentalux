@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import java.util.Objects;
 
 @DynamoDBTable(tableName = "Vehicle")
-public class vehicleRecord {
+public class VehicleRecord {
 
     private String id;
     private String name;
@@ -38,7 +38,7 @@ public class vehicleRecord {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        vehicleRecord vehicleRecord = (vehicleRecord) o;
+        VehicleRecord vehicleRecord = (VehicleRecord) o;
         return Objects.equals(id, vehicleRecord.id);
     }
 

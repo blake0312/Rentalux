@@ -2,7 +2,7 @@ package com.kenzie.appserver.controller;
 
 import com.kenzie.appserver.IntegrationTest;
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
-import com.kenzie.appserver.service.rentalService;
+import com.kenzie.appserver.service.RentalService;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +26,7 @@ class VehicleControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    rentalService rentalService;
+    RentalService rentalService;
 
     private final MockNeat mockNeat = MockNeat.threadLocal();
 

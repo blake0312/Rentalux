@@ -1,7 +1,7 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.repositories.rentalRepository;
-import com.kenzie.appserver.repositories.model.vehicleRecord;
+import com.kenzie.appserver.repositories.RentalRepository;
+import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.service.model.Vehicle;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.junit.jupiter.api.Assertions;
@@ -14,16 +14,16 @@ import static java.util.UUID.randomUUID;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class rentalServiceTest {
-    private rentalRepository rentalRepository;
-    private rentalService rentalService;
+public class RentalServiceTest {
+    private RentalRepository rentalRepository;
+    private RentalService rentalService;
     private LambdaServiceClient lambdaServiceClient;
 
     @BeforeEach
     void setup() {
-        rentalRepository = mock(rentalRepository.class);
+        rentalRepository = mock(RentalRepository.class);
         lambdaServiceClient = mock(LambdaServiceClient.class);
-        rentalService = new rentalService(rentalRepository, lambdaServiceClient);
+        rentalService = new RentalService(rentalRepository, lambdaServiceClient);
     }
     /** ------------------------------------------------------------------------
      *  exampleService.findById
@@ -34,7 +34,7 @@ public class rentalServiceTest {
         // GIVEN
         String id = randomUUID().toString();
 
-        vehicleRecord record = new vehicleRecord();
+        VehicleRecord record = new VehicleRecord();
         record.setId(id);
         record.setName("concertname");
 

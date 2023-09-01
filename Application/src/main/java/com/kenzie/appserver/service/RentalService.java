@@ -1,7 +1,7 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.repositories.model.vehicleRecord;
-import com.kenzie.appserver.repositories.rentalRepository;
+import com.kenzie.appserver.repositories.model.VehicleRecord;
+import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
@@ -9,11 +9,11 @@ import com.kenzie.capstone.service.model.ExampleData;
 import org.springframework.stereotype.Service;
 
 @Service
-public class rentalService {
-    private rentalRepository rentalRepository;
+public class RentalService {
+    private RentalRepository rentalRepository;
     private LambdaServiceClient lambdaServiceClient;
 
-    public rentalService(rentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient) {
+    public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient) {
         this.rentalRepository = rentalRepository;
         this.lambdaServiceClient = lambdaServiceClient;
     }
@@ -37,7 +37,7 @@ public class rentalService {
         ExampleData dataFromLambda = lambdaServiceClient.setExampleData(name);
 
         // Example sending data to the local repository
-        vehicleRecord vehicleRecord = new vehicleRecord();
+        VehicleRecord vehicleRecord = new VehicleRecord();
         vehicleRecord.setId(dataFromLambda.getId());
         vehicleRecord.setName(dataFromLambda.getData());
         rentalRepository.save(vehicleRecord);

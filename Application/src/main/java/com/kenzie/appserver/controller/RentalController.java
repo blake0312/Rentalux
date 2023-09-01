@@ -2,7 +2,7 @@ package com.kenzie.appserver.controller;
 
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.controller.model.RentalResponse;
-import com.kenzie.appserver.service.rentalService;
+import com.kenzie.appserver.service.RentalService;
 
 import com.kenzie.appserver.service.model.Vehicle;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/example")
-public class rentalController {
+public class RentalController {
 
-    private rentalService rentalService;
+    private RentalService rentalService;
 
-    rentalController(rentalService rentalService) {
+    RentalController(RentalService rentalService) {
         this.rentalService = rentalService;
     }
 
