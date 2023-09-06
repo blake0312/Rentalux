@@ -1,6 +1,6 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.repositories.model.RentalRecord;
+import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.service.model.Vehicle;
 
@@ -37,10 +37,10 @@ public class RentalService {
         ExampleData dataFromLambda = lambdaServiceClient.setExampleData(name);
 
         // Example sending data to the local repository
-        RentalRecord rentalRecord = new RentalRecord();
-        rentalRecord.setId(dataFromLambda.getId());
-        rentalRecord.setName(dataFromLambda.getData());
-        rentalRepository.save(rentalRecord);
+        VehicleRecord vehicleRecord = new VehicleRecord();
+        vehicleRecord.setId(dataFromLambda.getId());
+        vehicleRecord.setName(dataFromLambda.getData());
+        rentalRepository.save(vehicleRecord);
 
         Vehicle vehicle = new Vehicle(dataFromLambda.getId(), name);
         return vehicle;
