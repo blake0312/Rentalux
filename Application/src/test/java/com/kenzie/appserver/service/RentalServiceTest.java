@@ -1,7 +1,7 @@
 package com.kenzie.appserver.service;
 
 import com.kenzie.appserver.repositories.RentalRepository;
-import com.kenzie.appserver.repositories.model.VehicleRecord;
+import com.kenzie.appserver.repositories.model.RentalRecord;
 import com.kenzie.appserver.service.model.Vehicle;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +34,7 @@ public class RentalServiceTest {
         // GIVEN
         String id = randomUUID().toString();
 
-        VehicleRecord record = new VehicleRecord();
+        RentalRecord record = new RentalRecord();
         record.setId(id);
         record.setName("concertname");
 
