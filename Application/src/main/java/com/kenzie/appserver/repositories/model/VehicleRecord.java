@@ -4,31 +4,91 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-import java.util.Objects;
-
-@DynamoDBTable(tableName = "Vehicle")
+@DynamoDBTable(tableName = "VehicleRecord")
 public class VehicleRecord {
 
-    private String id;
-    private String name;
+    String id;
+    String name;
+    String description;
+    Double retailPrice;
+    Double mileage;
+    VehicleType vehicleType;
+    String make;
+    String images;
 
-    @DynamoDBHashKey(attributeName = "Id")
+    @DynamoDBHashKey(attributeName = "id")
     public String getId() {
         return id;
     }
 
-    @DynamoDBAttribute(attributeName = "Name")
+
+     public void setId(String id) {
+        this.id = id;
+    }
+
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public void setName(String name) {
         this.name = name;
     }
+
+    @DynamoDBAttribute(attributeName = "description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @DynamoDBAttribute(attributeName = "retailPrice")
+    public Double getRetalPrice() {
+        return retailPrice;
+    }
+
+
+    public void setRetalPrice(Double retalPrice) {
+        this.retailPrice = retalPrice;
+    }
+
+    @DynamoDBAttribute(attributeName = "mileage")
+    public Double getMileage() {
+        return mileage;
+    }
+
+    public void setMileage(Double mileage) {
+        this.mileage = mileage;
+    }
+    @DynamoDBAttribute(attributeName = "vehicleType")
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    @DynamoDBAttribute(attributeName = "make")
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    @DynamoDBAttribute(attributeName = "images")
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+
 
     @Override
     public boolean equals(Object o) {
@@ -45,5 +105,6 @@ public class VehicleRecord {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+
     }
 }
