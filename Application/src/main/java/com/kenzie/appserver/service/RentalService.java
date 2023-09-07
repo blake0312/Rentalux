@@ -2,6 +2,7 @@ package com.kenzie.appserver.service;
 
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
+import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
@@ -26,7 +27,10 @@ public class RentalService {
         // Example getting data from the local repository
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)
-                .map(example -> new Vehicle(example.getId(), example.getName()))
+                .map(example -> new Vehicle(example.getId(), example.getName(),
+                        example.getDescription(),example.getRetalPrice(),
+                        example.getMileage(),example.getVehicleType(),
+                        example.getMake(), example.getImages()))
                 .orElse(null);
 
         return dataFromDynamo;
@@ -42,7 +46,8 @@ public class RentalService {
         vehicleRecord.setName(dataFromLambda.getData());
         rentalRepository.save(vehicleRecord);
 
-        Vehicle vehicle = new Vehicle(dataFromLambda.getId(), name);
+        Vehicle vehicle = new Vehicle(dataFromLambda.getId(), name, "",
+                10.0, 2424.2, VehicleType.COUPE, "", "" );
         return vehicle;
     }
 }
