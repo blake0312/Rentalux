@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
-@DynamoDBTable(tableName = "Vehicle")
+@DynamoDBTable(tableName = "VehicleRecord")
 public class VehicleRecord {
 
     String id;
@@ -21,6 +21,7 @@ public class VehicleRecord {
         return id;
     }
 
+
      public void setId(String id) {
         this.id = id;
     }
@@ -29,6 +30,7 @@ public class VehicleRecord {
     public String getName() {
         return name;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -86,5 +88,23 @@ public class VehicleRecord {
 
     public void setImages(String images) {
         this.images = images;
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        VehicleRecord vehicleRecord = (VehicleRecord) o;
+        return Objects.equals(id, vehicleRecord.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+
     }
 }

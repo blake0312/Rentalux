@@ -1,7 +1,7 @@
 package com.kenzie.capstone.service.dao;
 
 import com.kenzie.capstone.service.model.ExampleData;
-import com.kenzie.capstone.service.model.ExampleRecord;
+import com.kenzie.capstone.service.model.ReservationRecord;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
@@ -12,14 +12,14 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 
-public class ExampleDao {
+public class reservationDao {
     private DynamoDBMapper mapper;
 
     /**
      * Allows access to and manipulation of Match objects from the data store.
      * @param mapper Access to DynamoDB
      */
-    public ExampleDao(DynamoDBMapper mapper) {
+    public reservationDao(DynamoDBMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -37,24 +37,24 @@ public class ExampleDao {
         return exampleData;
     }
 
-    public List<ExampleRecord> getExampleData(String id) {
-        ExampleRecord exampleRecord = new ExampleRecord();
-        exampleRecord.setId(id);
+    public List<ReservationRecord> getExampleData(String id) {
+        ReservationRecord reservationRecord = new ReservationRecord();
+        reservationRecord.setId(id);
 
-        DynamoDBQueryExpression<ExampleRecord> queryExpression = new DynamoDBQueryExpression<ExampleRecord>()
-                .withHashKeyValues(exampleRecord)
+        DynamoDBQueryExpression<ReservationRecord> queryExpression = new DynamoDBQueryExpression<ReservationRecord>()
+                .withHashKeyValues(reservationRecord)
                 .withConsistentRead(false);
 
-        return mapper.query(ExampleRecord.class, queryExpression);
+        return mapper.query(ReservationRecord.class, queryExpression);
     }
 
-    public ExampleRecord setExampleData(String id, String data) {
-        ExampleRecord exampleRecord = new ExampleRecord();
-        exampleRecord.setId(id);
-        exampleRecord.setData(data);
+    public ReservationRecord setExampleData(String id, String data) {
+        ReservationRecord reservationRecord = new ReservationRecord();
+        reservationRecord.setId(id);
+        reservationRecord.setData(data);
 
         try {
-            mapper.save(exampleRecord, new DynamoDBSaveExpression()
+            mapper.save(reservationRecord, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
                             "id",
                             new ExpectedAttributeValue().withExists(false)
@@ -63,6 +63,6 @@ public class ExampleDao {
             throw new IllegalArgumentException("id already exists");
         }
 
-        return exampleRecord;
+        return reservationRecord;
     }
 }
