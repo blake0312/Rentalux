@@ -2,6 +2,7 @@ package com.kenzie.appserver.service.model;
 
 import com.kenzie.appserver.repositories.model.VehicleType;
 
+import java.util.List;
 import java.util.UUID;
 
 public class Vehicle {
@@ -12,10 +13,9 @@ public class Vehicle {
     Double mileage;
     VehicleType vehicleType;
     String make;
-    String images;
+    List<String> images;
 
-    public Vehicle(String id, String name, String description, Double retailPrice,
-                   Double mileage, VehicleType vehicleType, String make, String images) {
+    public Vehicle(String id, String name, String description, Double retailPrice, Double mileage, VehicleType vehicleType, String make, List<String> images) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -54,7 +54,7 @@ public class Vehicle {
         return make;
     }
 
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 }
