@@ -14,7 +14,8 @@ public class Vehicle {
     String make;
     String images;
 
-    public Vehicle(String id, String name, String description, Double retailPrice, Double mileage, VehicleType vehicleType, String make, String images) {
+    public Vehicle(String id, String name, String description, Double retailPrice,
+                   Double mileage, VehicleType vehicleType, String make, String images) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -9,6 +9,9 @@ import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.ExampleData;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class RentalService {
     private RentalRepository rentalRepository;
@@ -27,27 +30,49 @@ public class RentalService {
         // Example getting data from the local repository
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)
-                .map(example -> new Vehicle(example.getId(), example.getName(),
-                        example.getDescription(),example.getRetalPrice(),
-                        example.getMileage(),example.getVehicleType(),
-                        example.getMake(), example.getImages()))
+                .map(vehicleRecord -> new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
+                        vehicleRecord.getDescription(),vehicleRecord.getRetalPrice(),
+                        vehicleRecord.getMileage(),vehicleRecord.getVehicleType(),
+                        vehicleRecord.getMake(), vehicleRecord.getImages()))
                 .orElse(null);
 
         return dataFromDynamo;
     }
 
-    public Vehicle addNewExample(String name) {
-        // Example sending data to the lambda
-        ExampleData dataFromLambda = lambdaServiceClient.setExampleData(name);
-
-        // Example sending data to the local repository
-        VehicleRecord vehicleRecord = new VehicleRecord();
-        vehicleRecord.setId(dataFromLambda.getId());
-        vehicleRecord.setName(dataFromLambda.getData());
+    public Vehicle addNewVehicle(Vehicle vehicle) {
+        VehicleRecord vehicleRecord = convertToVehicleRecord(vehicle);
         rentalRepository.save(vehicleRecord);
 
-        Vehicle vehicle = new Vehicle(dataFromLambda.getId(), name, "",
-                10.0, 2424.2, VehicleType.COUPE, "", "" );
         return vehicle;
+    }
+
+    public List<Vehicle> getAll(){
+        Iterable<VehicleRecord> vehicleRecords = rentalRepository.findAll();
+        List<Vehicle> vehicles = new ArrayList<>();
+        for(VehicleRecord  vehicleRecord : vehicleRecords){
+            vehicles.add(convertToVehicle(vehicleRecord));
+        }
+        return vehicles;
+    }
+
+    public Vehicle convertToVehicle(VehicleRecord vehicleRecord){
+        Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
+                vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),
+                vehicleRecord.getMileage(),vehicleRecord.getVehicleType(),
+                vehicleRecord.getMake(), vehicleRecord.getImages());
+      return  vehicle;
+    }
+
+    public VehicleRecord convertToVehicleRecord(Vehicle vehicle){
+        VehicleRecord vehicleRecord = new VehicleRecord();
+        vehicleRecord.setId(vehicle.getId());
+        vehicleRecord.setName(vehicle.getName());
+        vehicleRecord.setDescription(vehicle.getDescription());
+        vehicleRecord.setRetalPrice(vehicle.getRetailPrice());
+        vehicleRecord.setMileage(vehicle.getMileage());
+        vehicleRecord.setVehicleType(vehicle.getVehicleType());
+        vehicleRecord.setMake(vehicle.getMake());
+        vehicleRecord.setImages(vehicle.getImages());
+        return vehicleRecord;
     }
 }
