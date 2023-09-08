@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
+import java.util.List;
 import java.util.Objects;
 
 @DynamoDBTable(tableName = "VehicleRecord")
@@ -16,7 +17,7 @@ public class VehicleRecord {
     Double mileage;
     VehicleType vehicleType;
     String make;
-    String images;
+    List<String> images;
 
     @DynamoDBHashKey(attributeName = "id")
     public String getId() {
@@ -84,11 +85,11 @@ public class VehicleRecord {
     }
 
     @DynamoDBAttribute(attributeName = "images")
-    public String getImages() {
+    public List<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
+    public void setImages(List<String> images) {
         this.images = images;
     }
 
