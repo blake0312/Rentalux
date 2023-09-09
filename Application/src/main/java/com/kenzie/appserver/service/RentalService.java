@@ -31,8 +31,8 @@ public class RentalService {
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)
                 .map(vehicleRecord -> new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
-                        vehicleRecord.getDescription(),vehicleRecord.getRetalPrice(),
-                        vehicleRecord.getMileage(),vehicleRecord.getVehicleType(),
+                        vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),
+                        vehicleRecord.getMileage(), vehicleRecord.getVehicleType(),
                         vehicleRecord.getMake(), vehicleRecord.getImages()))
                 .orElse(null);
 
@@ -46,24 +46,24 @@ public class RentalService {
         return vehicle;
     }
 
-    public List<Vehicle> getAll(){
+    public List<Vehicle> getAllVehicles() {
         Iterable<VehicleRecord> vehicleRecords = rentalRepository.findAll();
         List<Vehicle> vehicles = new ArrayList<>();
-        for(VehicleRecord  vehicleRecord : vehicleRecords){
+        for (VehicleRecord vehicleRecord : vehicleRecords) {
             vehicles.add(convertToVehicle(vehicleRecord));
         }
         return vehicles;
     }
 
-    public Vehicle convertToVehicle(VehicleRecord vehicleRecord){
+    public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
         Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
                 vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),
-                vehicleRecord.getMileage(),vehicleRecord.getVehicleType(),
+                vehicleRecord.getMileage(), vehicleRecord.getVehicleType(),
                 vehicleRecord.getMake(), vehicleRecord.getImages());
-      return  vehicle;
+        return vehicle;
     }
 
-    public VehicleRecord convertToVehicleRecord(Vehicle vehicle){
+    public VehicleRecord convertToVehicleRecord(Vehicle vehicle) {
         VehicleRecord vehicleRecord = new VehicleRecord();
         vehicleRecord.setId(vehicle.getId());
         vehicleRecord.setName(vehicle.getName());
