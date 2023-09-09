@@ -32,14 +32,14 @@ public class RentalController {
         return ResponseEntity.ok(rentalResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<RentalResponse> addNewExample(@RequestBody RentalCreateRequest rentalCreateRequest) {
-        Vehicle vehicle = rentalService.addNewExample(rentalCreateRequest.getName());
-
-        RentalResponse rentalResponse = new RentalResponse();
-        rentalResponse.setId(vehicle.getId());
-        rentalResponse.setName(vehicle.getName());
-
-        return ResponseEntity.ok(rentalResponse);
-    }
+//    @PostMapping
+//    public ResponseEntity<RentalResponse> addNewExample(@RequestBody RentalCreateRequest rentalCreateRequest) {
+////        Vehicle vehicle = rentalService.addNewExample(rentalCreateRequest.getName());
+////
+////        RentalResponse rentalResponse = new RentalResponse();
+////        rentalResponse.setId(vehicle.getId());
+////        rentalResponse.setName(vehicle.getName());
+////
+////        return ResponseEntity.ok(rentalResponse);
+//    }
 }
