@@ -47,7 +47,7 @@ public class RentalController {
 
     @PostMapping("/all")
     public ResponseEntity<List<RentalResponse>> getAll(){
-        List<Vehicle> vehicle = rentalService.getAll();
+        List<Vehicle> vehicle = rentalService.getAllVehicles();
 
         return ResponseEntity.ok(vehicle.stream()
                 .map(this::rentalResponseHelper)
