@@ -13,7 +13,7 @@ export default class RentalClient extends BaseClass {
 
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'getExample', 'createExample'];
+        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles'];
         this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
@@ -36,26 +36,40 @@ export default class RentalClient extends BaseClass {
      * @param errorCallback (Optional) A function to execute if the call fails.
      * @returns The concert
      */
-    async getExample(id, errorCallback) {
+    async getRental(id, errorCallback) {
         try {
-            const response = await this.client.get(`/example/${id}`);
+            const response = await this.client.get(`/rental/${id}`);
             return response.data;
         } catch (error) {
-            this.handleError("getExample", error, errorCallback)
+            this.handleError("getRental", error, errorCallback)
         }
     }
 
-    async createExample(name, errorCallback) {
+    async createRental(name, description, retailPrice, mileage, vehicleType, make, images, errorCallback) {
         try {
-            const response = await this.client.post(`example`, {
-                name: name
+            const response = await this.client.post(`rental`, {
+                "name": name,
+                "description" : description,
+                "retailPrice" : retailPrice,
+                "mileage" : mileage,
+                "vehicleType" : vehicleType,
+                "make" : make,
+                "images" : images
             });
             return response.data;
         } catch (error) {
-            this.handleError("createExample", error, errorCallback);
+            this.handleError("createRental", error, errorCallback);
         }
     }
 
+    async getAllVehicles(errorCallback){
+        try {
+            const response = await this.client.get('rental/all');
+            return response.data;
+        }catch (error){
+            this.handleError("getAllVehicles", error, errorCallback)
+        }
+    }
     /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.

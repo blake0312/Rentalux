@@ -5,40 +5,21 @@ import RentalClient from "../api/rentalClient";
 /**
  * Logic needed for the view playlist page of the website.
  */
-class rentalHomePage extends BaseClass {
+class RentalHomePage extends BaseClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['onGet', 'onCreate', 'renderExample'], this);
+        this.bindClassMethods(['onGet', 'onCreate'], this);
         this.dataStore = new DataStore();
+        this.client = new RentalClient();
     }
 
     /**
      * Once the page has loaded, set up the event handlers and fetch the concert list.
      */
     async mount() {
-        document.getElementById('get-by-id-form').addEventListener('submit', this.onGet);
         document.getElementById('create-form').addEventListener('submit', this.onCreate);
         this.client = new RentalClient();
-
-        this.dataStore.addChangeListener(this.renderExample)
-    }
-
-    // Render Methods --------------------------------------------------------------------------------------------------
-
-    async renderExample() {
-        let resultArea = document.getElementById("result-info");
-
-        const example = this.dataStore.get("example");
-
-        if (example) {
-            resultArea.innerHTML = `
-                <div>ID: ${example.id}</div>
-                <div>Name: ${example.name}</div>
-            `
-        } else {
-            resultArea.innerHTML = "No Item";
-        }
     }
 
     // Event Handlers --------------------------------------------------------------------------------------------------
@@ -48,10 +29,10 @@ class rentalHomePage extends BaseClass {
         event.preventDefault();
 
         let id = document.getElementById("id-field").value;
-        this.dataStore.set("example", null);
+        this.dataStore.set("rental", null);
 
-        let result = await this.client.getExample(id, this.errorHandler);
-        this.dataStore.set("example", result);
+        let result = await this.client.getRental(id, this.errorHandler);
+        this.dataStore.set("rental", result);
         if (result) {
             this.showMessage(`Got ${result.name}!`)
         } else {
@@ -62,27 +43,37 @@ class rentalHomePage extends BaseClass {
     async onCreate(event) {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
-        this.dataStore.set("example", null);
+        this.dataStore.set("rental", null);
 
         let name = document.getElementById("create-name-field").value;
+        let description = document.getElementById("create-description-field").value;
+        let retailPrice = document.getElementById("create-retailPrice-field").value;
+        let mileage = document.getElementById("create-mileage-field").value;
+        let vehicleType = document.getElementById("create-vehicleType-field").value;
+        let make = document.getElementById("create-make-field").value;
+        let imagesString = document.getElementById("create-images-field").value;
+        let images = imagesString.split('\n');
+        images = images.map(value => value.trim());
 
-        const createdExample = await this.client.createExample(name, this.errorHandler);
-        this.dataStore.set("example", createdExample);
+        const createdRental = await this.client.createRental(name, description, retailPrice, mileage, vehicleType, make, images, this.errorHandler);
+        this.dataStore.set("rental", createdRental);
 
-        if (createdExample) {
-            this.showMessage(`Created ${createdExample.name}!`)
+        if (createdRental) {
+            this.showMessage(`Created ${createdRental.name}!`)
         } else {
             this.errorHandler("Error creating!  Try again...");
         }
     }
+
+
 }
 
 /**
  * Main method to run when the page contents have loaded.
  */
 const main = async () => {
-    const rentalHomePage = new rentalHomePage();
-    rentalHomePage.mount();
+    const rentalHomePage = new RentalHomePage();
+    await rentalHomePage.mount();
 };
 
 window.addEventListener('DOMContentLoaded', main);
