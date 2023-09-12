@@ -44,8 +44,7 @@ public class RentalController {
 
         return ResponseEntity.ok(rentalResponse);
     }
-
-    @PostMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<List<RentalResponse>> getAll(){
         List<Vehicle> vehicle = rentalService.getAllVehicles();
 
