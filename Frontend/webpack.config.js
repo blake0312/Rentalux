@@ -39,6 +39,11 @@ module.exports = {
       filename: 'vehicle.html',
       inject: false
     }),
+    new HtmlWebpackPlugin({
+      template: './src/vehicle-details.html',
+      filename: 'vehicle-details.html',
+      inject: false
+    }),
     new CopyPlugin({
       patterns: [
         {
