@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     rentalHomePage: path.resolve(__dirname, 'src', 'pages', 'rentalHomePage.js'),
     vehicleBrowsePage: path.resolve(__dirname, 'src', 'pages', 'vehicleBrowsePage.js'),
+    vehicleDescriptionPage: path.resolve(__dirname, 'src', 'pages', 'vehicleDescriptionPage.js')
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

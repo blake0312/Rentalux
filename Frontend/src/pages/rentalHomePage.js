@@ -19,6 +19,7 @@ class RentalHomePage extends BaseClass {
      */
     async mount() {
         document.getElementById('create-form').addEventListener('submit', this.onCreate);
+        document.getElementById('get-by-id-form').addEventListener('submit', this.onGet);
         this.client = new RentalClient();
     }
 
