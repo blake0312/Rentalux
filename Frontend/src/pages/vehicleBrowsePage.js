@@ -33,11 +33,11 @@ class VehicleBrowsePage extends BaseClass {
                     (vehicle) => `
                         <div class = "card">
                         <div id = "id"> Id: ${vehicle.id}</div>
-                        <div>Name: ${vehicle.name} </div>
+                        <a href="vehicle-details.html?id=${vehicle.id}">Name: ${vehicle.name} </a>
                         <div>Description: ${vehicle.description}</div>
                         <div>RetailPrice: ${vehicle.retailPrice} </div>
                         <div>Mileage: ${vehicle.mileage}</div>
-                        <div>Type: ${vehicle.type}</div>
+                        <div>Type: ${vehicle.vehicleType}</div>
                         <div>Make: ${vehicle.make}</div
                         <div>Images: ${vehicle.images}</div>
                         </div>
@@ -46,7 +46,6 @@ class VehicleBrowsePage extends BaseClass {
                 .join("");
         }
     }
-
 }
 
 /**
