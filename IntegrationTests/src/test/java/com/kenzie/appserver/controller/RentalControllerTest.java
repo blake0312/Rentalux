@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -40,11 +41,15 @@ class RentalControllerTest {
 
     @Test
     public void getById_Exists() throws Exception {
-
+        List<String> images = new ArrayList<>();
+        images.add("image1");
+        images.add("image2");
         String name = mockNeat.strings().valStr();
+        Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(),name, "v-8 twin turbo", 190000.00,
+        0.0, VehicleType.SEDAN,"Porsche", images);
 
-        Vehicle persistedVehicle = rentalService.addNewExample(name);
-        mvc.perform(get("/example/{id}", persistedVehicle.getId())
+        Vehicle persistedVehicle = rentalService.addNewVehicle(vehicle);
+        mvc.perform(get("/rental/{id}", persistedVehicle.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("id")
                         .isString())
@@ -89,7 +94,7 @@ class RentalControllerTest {
                 .andExpect(jsonPath("mileage")
                         .value(is(mileage)))
                 .andExpect(jsonPath("vehicleType")
-                        .value(is(vehicleType)))
+                        .value(is(vehicleType.name())))
                 .andExpect(jsonPath("make")
                         .value(is(make)))
                 .andExpect(jsonPath("images")
@@ -123,7 +128,7 @@ class RentalControllerTest {
         mvc.perform(get("/rental/all")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(status().is2xxSuccessful());
     }
 }

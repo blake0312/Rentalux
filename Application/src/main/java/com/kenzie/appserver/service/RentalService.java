@@ -25,7 +25,7 @@ public class RentalService {
     public Vehicle findById(String id) {
 
         // Example getting data from the lambda
-        ExampleData dataFromLambda = lambdaServiceClient.getExampleData(id);
+        //ExampleData dataFromLambda = lambdaServiceClient.getExampleData(id);
 
         // Example getting data from the local repository
         Vehicle dataFromDynamo = rentalRepository

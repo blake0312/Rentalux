@@ -25,12 +25,10 @@ public class RentalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RentalResponse> get(@PathVariable("id") String id) {
-
         Vehicle vehicle = rentalService.findById(id);
         if (vehicle == null) {
             return ResponseEntity.notFound().build();
         }
-
         RentalResponse rentalResponse = rentalResponseHelper(vehicle);
 
         return ResponseEntity.ok(rentalResponse);
