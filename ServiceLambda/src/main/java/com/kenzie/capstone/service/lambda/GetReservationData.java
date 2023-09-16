@@ -2,7 +2,7 @@ package com.kenzie.capstone.service.lambda;
 
 import com.kenzie.capstone.service.ReservationService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
-import com.kenzie.capstone.service.model.ExampleData;
+import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -45,7 +45,7 @@ public class GetReservationData implements RequestHandler<APIGatewayProxyRequest
         }
 
         try {
-            ExampleData exampleData = reservationService.getExampleData(id);
+            ReservationData exampleData = reservationService.getReservationData(id);
             String output = gson.toJson(exampleData);
 
             return response

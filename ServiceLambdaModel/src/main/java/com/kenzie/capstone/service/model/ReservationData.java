@@ -1,14 +1,8 @@
 package com.kenzie.capstone.service.model;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
-
 import java.util.Objects;
 
-@DynamoDBTable(tableName = "Reservations")
-public class ReservationRecord {
+public class ReservationData {
 
     private String id;
     private String customerId;
@@ -18,7 +12,15 @@ public class ReservationRecord {
     private String endData;
 
 
-    @DynamoDBHashKey(attributeName = "id")
+    public ReservationData(String id, String customerId, boolean payed, String vehicleId, String startData, String endData) {
+        this.id = id;
+        this.customerId = customerId;
+        this.payed = payed;
+        this.vehicleId = vehicleId;
+        this.startData = startData;
+        this.endData = endData;
+    }
+
     public String getId() {
         return id;
     }
@@ -27,7 +29,6 @@ public class ReservationRecord {
         this.id = id;
     }
 
-    @DynamoDBRangeKey(attributeName = "customerId")
     public String getCustomerId() {
         return customerId;
     }
@@ -36,7 +37,6 @@ public class ReservationRecord {
         this.customerId = customerId;
     }
 
-    @DynamoDBAttribute(attributeName = "payed")
     public boolean isPayed() {
         return payed;
     }
@@ -45,7 +45,6 @@ public class ReservationRecord {
         this.payed = payed;
     }
 
-    @DynamoDBAttribute(attributeName = "vehicleId")
     public String getVehicleId() {
         return vehicleId;
     }
@@ -54,7 +53,6 @@ public class ReservationRecord {
         this.vehicleId = vehicleId;
     }
 
-    @DynamoDBAttribute(attributeName = "startDate")
     public String getStartData() {
         return startData;
     }
@@ -63,7 +61,6 @@ public class ReservationRecord {
         this.startData = startData;
     }
 
-    @DynamoDBAttribute(attributeName = "endDate")
     public String getEndData() {
         return endData;
     }
@@ -76,7 +73,7 @@ public class ReservationRecord {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ReservationRecord that = (ReservationRecord) o;
+        ReservationData that = (ReservationData) o;
         return id.equals(that.id) && customerId.equals(that.customerId);
     }
 

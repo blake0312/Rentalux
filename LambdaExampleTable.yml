@@ -5,10 +5,14 @@ Resources:
       "AttributeDefinitions":
         - "AttributeName": "id"
           "AttributeType": "S"
+        - "AttributeName": "customerID"
+          "AttributeType": " S"
       "KeySchema":
         - "AttributeName": "id"
           "KeyType": "HASH"
+        - "AttributeName": "customerId"
+          "KeyType": "RANGE"
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
       BillingMode: PAY_PER_REQUEST
-      TableName: "LambdaExample"
+      TableName: "Reservations"
