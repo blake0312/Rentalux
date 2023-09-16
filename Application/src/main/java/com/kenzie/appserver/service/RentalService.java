@@ -2,11 +2,10 @@ package com.kenzie.appserver.service;
 
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
-import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.kenzie.capstone.service.client.LambdaServiceClient;
-import com.kenzie.capstone.service.model.ExampleData;
+import com.kenzie.capstone.service.model.ReservationData;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +24,9 @@ public class RentalService {
     public Vehicle findById(String id) {
 
         // Example getting data from the lambda
+
         //ExampleData dataFromLambda = lambdaServiceClient.getExampleData(id);
+
 
         // Example getting data from the local repository
         Vehicle dataFromDynamo = rentalRepository

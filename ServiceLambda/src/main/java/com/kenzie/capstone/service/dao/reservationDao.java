@@ -1,6 +1,6 @@
 package com.kenzie.capstone.service.dao;
 
-import com.kenzie.capstone.service.model.ExampleData;
+import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.model.ReservationRecord;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -23,7 +23,7 @@ public class reservationDao {
         this.mapper = mapper;
     }
 
-    public ExampleData storeExampleData(ExampleData exampleData) {
+    public ReservationData storeExampleData(ReservationData exampleData) {
         try {
             mapper.save(exampleData, new DynamoDBSaveExpression()
                     .withExpected(ImmutableMap.of(
@@ -37,7 +37,7 @@ public class reservationDao {
         return exampleData;
     }
 
-    public List<ReservationRecord> getExampleData(String id) {
+    public List<ReservationRecord> getReservationData(String id) {
         ReservationRecord reservationRecord = new ReservationRecord();
         reservationRecord.setId(id);
 
@@ -48,10 +48,16 @@ public class reservationDao {
         return mapper.query(ReservationRecord.class, queryExpression);
     }
 
-    public ReservationRecord setExampleData(String id, String data) {
+    public ReservationRecord setReservationData(String id, String customerId, boolean payed, String vehicleId,
+                                                String startData, String endData) {
         ReservationRecord reservationRecord = new ReservationRecord();
         reservationRecord.setId(id);
-        reservationRecord.setData(data);
+        reservationRecord.setCustomerId(customerId);
+        reservationRecord.setPayed(payed);
+        reservationRecord.setVehicleId(vehicleId);
+        reservationRecord.setStartData(startData);
+        reservationRecord.setEndData(endData);
+
 
         try {
             mapper.save(reservationRecord, new DynamoDBSaveExpression()

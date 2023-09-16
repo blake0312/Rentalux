@@ -2,7 +2,7 @@ package com.kenzie.capstone.service.lambda;
 
 import com.kenzie.capstone.service.ReservationService;
 import com.kenzie.capstone.service.dependency.ServiceComponent;
-import com.kenzie.capstone.service.model.ExampleData;
+import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.dependency.DaggerServiceComponent;
 
 import com.amazonaws.services.lambda.runtime.Context;
@@ -44,9 +44,12 @@ public class SetReservationData implements RequestHandler<APIGatewayProxyRequest
                     .withBody("data is invalid");
         }
 
+       ReservationData rdata = gson.fromJson(data, ReservationData.class );
+
         try {
-            ExampleData exampleData = reservationService.setExampleData(data);
-            String output = gson.toJson(exampleData);
+            ReservationData reservationData = reservationService.setReservationData( rdata.getCustomerId(), rdata.isPayed(),
+                    rdata.getVehicleId(), rdata.getStartData(), rdata.getEndData());
+            String output = gson.toJson(reservationData);
 
             return response
                     .withStatusCode(200)
