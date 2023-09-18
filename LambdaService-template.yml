@@ -6,13 +6,13 @@ Parameters:
     Type: String
     Default: dev
 Resources:
-  GetExampleDataFunction:
+  GetReservationDataFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
       Handler: com.kenzie.capstone.service.lambda.GetReservationData
       Runtime: java11
-      Description: Get Example Data for given id
+      Description: Get Reservation Data for given id
       MemorySize: 512
       Timeout: 240
       # Function's execution role
@@ -30,13 +30,13 @@ Resources:
           Properties:
             Path: /reservation/{id}
             Method: get
-  SetExampleDataFunction:
+  SetReservationDataFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ServiceLambda/build/distributions/ServiceLambda.zip
-      Handler: com.kenzie.capstone.service.lambda.SetExampleData
+      Handler: com.kenzie.capstone.service.lambda.SetReservationData
       Runtime: java11
-      Description: Set Example Data
+      Description: Set Reservation Data
       MemorySize: 512
       Timeout: 240
       # Function's execution role
