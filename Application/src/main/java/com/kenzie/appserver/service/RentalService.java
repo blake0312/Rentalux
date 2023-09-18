@@ -4,6 +4,7 @@ import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.service.model.Vehicle;
 
+import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import com.kenzie.capstone.service.model.ReservationData;
 import org.springframework.stereotype.Service;
@@ -21,23 +22,15 @@ public class RentalService {
         this.lambdaServiceClient = lambdaServiceClient;
     }
 
-    public Vehicle findById(String id) {
+    public VehicleWithLambdaInfo findById(String id) {
+        ReservationData dataFromLambda = lambdaServiceClient.getReservationData(id);
 
-        // Example getting data from the lambda
-
-        //ExampleData dataFromLambda = lambdaServiceClient.getExampleData(id);
-
-
-        // Example getting data from the local repository
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)
-                .map(vehicleRecord -> new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
-                        vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),
-                        vehicleRecord.getMileage(), vehicleRecord.getVehicleType(),
-                        vehicleRecord.getMake(), vehicleRecord.getImages()))
+                .map(this::convertToVehicle)
                 .orElse(null);
 
-        return dataFromDynamo;
+        return new VehicleWithLambdaInfo(dataFromDynamo, dataFromLambda);
     }
 
     public Vehicle addNewVehicle(Vehicle vehicle) {

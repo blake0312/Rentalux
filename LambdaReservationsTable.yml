@@ -5,12 +5,12 @@ Resources:
       "AttributeDefinitions":
         - "AttributeName": "id"
           "AttributeType": "S"
-        - "AttributeName": "customerID"
-          "AttributeType": " S"
+        - "AttributeName": "vehicleId"
+          "AttributeType": "S"
       "KeySchema":
         - "AttributeName": "id"
           "KeyType": "HASH"
-        - "AttributeName": "customerId"
+        - "AttributeName": "vehicleId"
           "KeyType": "RANGE"
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
