@@ -4,6 +4,7 @@ import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.model.Vehicle;
+import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,12 +43,12 @@ public class RentalServiceTest {
 
         // WHEN
         when(rentalRepository.findById(id)).thenReturn(Optional.of(record));
-        Vehicle vehicle = rentalService.findById(id);
+        VehicleWithLambdaInfo vehicle = rentalService.findById(id);
 
         // THEN
         Assertions.assertNotNull(vehicle, "The object is returned");
-        Assertions.assertEquals(record.getId(), vehicle.getId(), "The id matches");
-        Assertions.assertEquals(record.getName(), vehicle.getName(), "The name matches");
+        Assertions.assertEquals(record.getId(), vehicle.getVehicle().getId(), "The id matches");
+        Assertions.assertEquals(record.getName(), vehicle.getVehicle().getName(), "The name matches");
     }
 
     @Test
@@ -58,10 +59,10 @@ public class RentalServiceTest {
         when(rentalRepository.findById(id)).thenReturn(Optional.empty());
 
         // WHEN
-        Vehicle vehicle = rentalService.findById(id);
+        VehicleWithLambdaInfo vehicle = rentalService.findById(id);
 
         // THEN
-        Assertions.assertNull(vehicle, "The example is null when not found");
+        Assertions.assertNull(vehicle.getVehicle(), "The example is null when not found");
     }
 
     @Test

@@ -6,6 +6,8 @@ import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.service.RentalService;
 
 import com.kenzie.appserver.service.model.Vehicle;
+import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
+import com.kenzie.capstone.service.model.ReservationData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +27,12 @@ public class RentalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RentalResponse> get(@PathVariable("id") String id) {
-        Vehicle vehicle = rentalService.findById(id);
+        VehicleWithLambdaInfo vehicle = rentalService.findById(id);
         if (vehicle == null) {
             return ResponseEntity.notFound().build();
         }
-        RentalResponse rentalResponse = rentalResponseHelper(vehicle);
+
+        RentalResponse rentalResponse = rentalResponseHelperWithLambda(vehicle);
 
         return ResponseEntity.ok(rentalResponse);
     }
@@ -38,7 +41,7 @@ public class RentalController {
     public ResponseEntity<RentalResponse> addNewRental(@RequestBody RentalCreateRequest rentalCreateRequest) {
         Vehicle vehicle = rentalService.addNewVehicle(convertToVehicle(rentalCreateRequest));
 
-        RentalResponse rentalResponse = rentalResponseHelper(vehicle);
+        RentalResponse rentalResponse = rentalResponseHelperNonLambda(vehicle);
 
         return ResponseEntity.ok(rentalResponse);
     }
@@ -47,7 +50,7 @@ public class RentalController {
         List<Vehicle> vehicle = rentalService.getAllVehicles();
 
         return ResponseEntity.ok(vehicle.stream()
-                .map(this::rentalResponseHelper)
+                .map(this::rentalResponseHelperNonLambda)
                 .collect(Collectors.toList()));
 
     }
@@ -60,8 +63,20 @@ public class RentalController {
         return  vehicle;
     }
 
-    public RentalResponse rentalResponseHelper(Vehicle vehicle){
+    public RentalResponse rentalResponseHelperWithLambda(VehicleWithLambdaInfo withLambdaInfo){
+        //Combine data from both vehicle and reservation data into rental response
+        Vehicle vehicle = withLambdaInfo.getVehicle();
 
+        ReservationData dataFromLambda = withLambdaInfo.getData();
+
+        //Rental response is only set with vehicle data currently
+        RentalResponse rentalResponse = rentalResponseHelperNonLambda(vehicle);
+
+        //Add the attributes from data to response class and add them here with other setters.
+
+        return rentalResponse;
+    }
+    public RentalResponse rentalResponseHelperNonLambda(Vehicle vehicle){
         RentalResponse rentalResponse = new RentalResponse();
         rentalResponse.setId(vehicle.getId());
         rentalResponse.setName(vehicle.getName());

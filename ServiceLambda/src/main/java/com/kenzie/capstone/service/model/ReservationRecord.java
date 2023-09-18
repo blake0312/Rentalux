@@ -27,7 +27,7 @@ public class ReservationRecord {
         this.id = id;
     }
 
-    @DynamoDBRangeKey(attributeName = "customerId")
+    @DynamoDBAttribute(attributeName = "customerId")
     public String getCustomerId() {
         return customerId;
     }
@@ -45,7 +45,7 @@ public class ReservationRecord {
         this.payed = payed;
     }
 
-    @DynamoDBAttribute(attributeName = "vehicleId")
+    @DynamoDBRangeKey(attributeName = "vehicleId")
     public String getVehicleId() {
         return vehicleId;
     }
