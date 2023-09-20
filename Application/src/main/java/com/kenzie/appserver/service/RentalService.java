@@ -1,5 +1,6 @@
 package com.kenzie.appserver.service;
 
+import com.google.gson.Gson;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.service.model.Vehicle;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class RentalService {
@@ -49,6 +51,12 @@ public class RentalService {
         return vehicles;
     }
 
+    public ReservationData addNewReservation(ReservationData reservationData){
+        Gson gson = new Gson();
+        String data = gson.toJson(reservationData);
+
+        return lambdaServiceClient.setReservationData(data);
+    }
     public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
         Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
                 vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),

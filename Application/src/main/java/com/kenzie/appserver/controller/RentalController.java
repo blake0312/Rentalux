@@ -1,5 +1,7 @@
 package com.kenzie.appserver.controller;
 
+import com.kenzie.appserver.controller.model.LambdaReservationCreateRequest;
+import com.kenzie.appserver.controller.model.LambdaReservationResponse;
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.controller.model.RentalResponse;
 import com.kenzie.appserver.service.RentalService;
@@ -44,6 +46,7 @@ public class RentalController {
 
         return ResponseEntity.ok(rentalResponse);
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<RentalResponse>> getAll(){
         List<Vehicle> vehicle = rentalService.getAllVehicles();
@@ -52,6 +55,13 @@ public class RentalController {
                 .map(this::rentalResponseHelperNonLambda)
                 .collect(Collectors.toList()));
 
+    }
+
+    @PostMapping("/reservation")
+    public ResponseEntity<LambdaReservationResponse> addNewReservation(@RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest){
+        ReservationData data = rentalService.addNewReservation(convertToReservationData(lambdaReservationCreateRequest));
+
+        return ResponseEntity.ok(convertToReservationResponse(data));
     }
 
     public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest){
@@ -76,6 +86,7 @@ public class RentalController {
 
         return rentalResponse;
     }
+
     public RentalResponse rentalResponseHelperNonLambda(Vehicle vehicle){
         RentalResponse rentalResponse = new RentalResponse();
         rentalResponse.setId(vehicle.getId());
@@ -88,5 +99,24 @@ public class RentalController {
         rentalResponse.setVehicleType(vehicle.getVehicleType());
 
         return rentalResponse;
+    }
+
+    public ReservationData convertToReservationData(LambdaReservationCreateRequest request){
+        String id = "Jacobus";
+
+        return  new ReservationData(id, request.getCustomerId(),request.isPayed(),
+                request.getVehicleId(),request.getStartData(),request.getEndData());
+    }
+
+    public LambdaReservationResponse convertToReservationResponse(ReservationData data){
+        LambdaReservationResponse converted = new LambdaReservationResponse();
+        converted.setId(data.getId());
+        converted.setCustomerId(data.getCustomerId());
+        converted.setPayed(data.isPayed());
+        converted.setVehicleId(data.getVehicleId());
+        converted.setStartData(data.getStartData());
+        converted.setEndData(data.getEndData());
+
+        return converted;
     }
 }
