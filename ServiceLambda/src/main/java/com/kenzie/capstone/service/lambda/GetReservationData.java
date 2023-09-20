@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GetReservationData implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -45,8 +46,8 @@ public class GetReservationData implements RequestHandler<APIGatewayProxyRequest
         }
 
         try {
-            ReservationData exampleData = reservationService.getReservationData(id);
-            String output = gson.toJson(exampleData);
+            List<ReservationData> reservationData = reservationService.getReservationData(id);
+            String output = gson.toJson(reservationData);
 
             return response
                     .withStatusCode(200)

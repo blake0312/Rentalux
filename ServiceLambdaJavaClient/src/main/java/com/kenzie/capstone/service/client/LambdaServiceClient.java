@@ -1,30 +1,34 @@
 package com.kenzie.capstone.service.client;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.QueryResultPage;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kenzie.capstone.service.model.ReservationData;
+
+import java.util.List;
 
 
 public class LambdaServiceClient {
 
     private static final String GET_RESERVATION_ENDPOINT = "reservation/{id}";
     private static final String SET_RESERVATION_ENDPOINT = "reservation";
-
     private ObjectMapper mapper;
 
     public LambdaServiceClient() {
         this.mapper = new ObjectMapper();
     }
 
-    public ReservationData getReservationData(String id) {
+    public List<ReservationData> getReservationData(String id) {
         EndpointUtility endpointUtility = new EndpointUtility();
         String response = endpointUtility.getEndpoint(GET_RESERVATION_ENDPOINT.replace("{id}", id));
-        ReservationData exampleData;
+        List<ReservationData> reservationData;
         try {
-            exampleData = mapper.readValue(response, ReservationData.class);
+            reservationData = mapper.readValue(response, new TypeReference<List<ReservationData>>() {});
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return exampleData;
+        return reservationData;
     }
 
     public ReservationData setReservationData(String data) {

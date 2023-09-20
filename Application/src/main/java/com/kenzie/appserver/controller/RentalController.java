@@ -2,7 +2,6 @@ package com.kenzie.appserver.controller;
 
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.controller.model.RentalResponse;
-import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.service.RentalService;
 
 import com.kenzie.appserver.service.model.Vehicle;
@@ -67,12 +66,13 @@ public class RentalController {
         //Combine data from both vehicle and reservation data into rental response
         Vehicle vehicle = withLambdaInfo.getVehicle();
 
-        ReservationData dataFromLambda = withLambdaInfo.getData();
+        List<ReservationData> dataFromLambda = withLambdaInfo.getData();
 
         //Rental response is only set with vehicle data currently
         RentalResponse rentalResponse = rentalResponseHelperNonLambda(vehicle);
 
         //Add the attributes from data to response class and add them here with other setters.
+        rentalResponse.setReservations(dataFromLambda);
 
         return rentalResponse;
     }
