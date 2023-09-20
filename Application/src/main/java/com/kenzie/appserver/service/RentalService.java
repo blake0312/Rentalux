@@ -23,7 +23,7 @@ public class RentalService {
     }
 
     public VehicleWithLambdaInfo findById(String id) {
-        ReservationData dataFromLambda = lambdaServiceClient.getReservationData(id);
+        List<ReservationData> dataFromLambda = lambdaServiceClient.getReservationData(id);
 
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)

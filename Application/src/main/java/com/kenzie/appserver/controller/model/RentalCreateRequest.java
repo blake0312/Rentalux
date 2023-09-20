@@ -89,8 +89,6 @@ public class RentalCreateRequest {
         this.images = images;
     }
 
-
-
     public String getName() {
         return name;
     }

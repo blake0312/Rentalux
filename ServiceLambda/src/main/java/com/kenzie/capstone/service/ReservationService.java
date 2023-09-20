@@ -1,5 +1,8 @@
 package com.kenzie.capstone.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.QueryResultPage;
 import com.amazonaws.services.dynamodbv2.xspec.B;
 import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.dao.reservationDao;
@@ -9,23 +12,29 @@ import javax.inject.Inject;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ReservationService {
 
     private reservationDao reservationDao;
+    private DynamoDBMapper mapper;
 
     @Inject
     public ReservationService(reservationDao reservationDao) {
         this.reservationDao = reservationDao;
     }
 
-    public ReservationData getReservationData(String id) {
+    public List<ReservationData> getReservationData(String id) {
         List<ReservationRecord> records = reservationDao.getReservationData(id);
         if (records.size() > 0) {
-            return new ReservationData(records.get(0).getId(), records.get(0).getCustomerId(), records.get(0).isPayed(),
-                    records.get(0).getVehicleId(), records.get(0).getStartData(), records.get(0).getEndData());
+            return records.stream()
+                    .map(s -> new ReservationData(s.getId(), s.getCustomerId(), s.isPayed(),
+                            s.getVehicleId(), s.getStartData(), s.getEndData()))
+                    .collect(Collectors.toList());
         }
         return null;
+
+
     }
 
     public ReservationData setReservationData(String customerID, boolean payed, String vehicleId, String startDate, String endDate) {
