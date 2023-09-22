@@ -41,7 +41,7 @@ class VehicleDescriptionPage extends BaseClass {
         this.dataStore.set("reservation", reservedReservation);
 
         if (reservedReservation) {
-            this.showMessage(`Created ${reservedReservation.name}!`)
+            this.showMessage(`Created ${reservedReservation.id}!`)
         } else {
             this.errorHandler("Error creating!  Try again...");
         }
