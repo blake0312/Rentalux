@@ -1,5 +1,6 @@
 package com.kenzie.capstone.service.dao;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.model.ReservationRecord;
@@ -41,15 +42,12 @@ public class reservationDao {
     }
 
     public List<ReservationRecord> getReservationData(String id) {
-        ReservationRecord record = new ReservationRecord();
-
-        DynamoDBQueryExpression<ReservationRecord> queryExpression = new DynamoDBQueryExpression<ReservationRecord>()
-                .withHashKeyValues(record)
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
                 .withFilterExpression("vehicleId = :value")
                 .withExpressionAttributeValues(Map.of(":value", new AttributeValue().withS(id)))
                 .withConsistentRead(false);
 
-        return mapper.query(ReservationRecord.class, queryExpression);
+        return mapper.scan(ReservationRecord.class, scanExpression);
     }
 
     public ReservationRecord setReservationData(String id, String customerId, boolean payed, String vehicleId,
