@@ -1,5 +1,8 @@
 package com.kenzie.capstone.service.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class ReservationData {
@@ -12,7 +15,10 @@ public class ReservationData {
     private String endData;
 
 
-    public ReservationData(String id, String customerId, boolean payed, String vehicleId, String startData, String endData) {
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
+    public ReservationData(@JsonProperty("id") String id, @JsonProperty("customerId") String customerId,
+                           @JsonProperty("payed")boolean payed, @JsonProperty("vehicleId") String vehicleId,
+                           @JsonProperty("startData") String startData, @JsonProperty("endData") String endData) {
         this.id = id;
         this.customerId = customerId;
         this.payed = payed;
