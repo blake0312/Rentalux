@@ -9,7 +9,7 @@ class VehicleDescriptionPage extends BaseClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['renderVehicle'], this);
+        this.bindClassMethods(['renderVehicle', 'onCreate'], this);
         this.dataStore = new DataStore();
         this.client = new RentalClient();
     }
@@ -22,8 +22,32 @@ class VehicleDescriptionPage extends BaseClass {
         const vehicleId = urlParams.get('id');
         const vehicle = await this.client.getRental(vehicleId, this.errorHandler);
         this.dataStore.setVehicle(vehicle);
+        this.dataStore.set("vehicleId", vehicleId);
         await this.renderVehicle();
+        document.getElementById('create-form').addEventListener('submit', this.onCreate);
     }
+
+    async onCreate(event) {
+        // Prevent the page from refreshing on form submit
+        event.preventDefault();
+        this.dataStore.set("reservation", null);
+
+        let vehicleId = this.dataStore.get("vehicleId");
+        let startDate = document.getElementById("start-date").value;
+        let endDate = document.getElementById("end-date").value;
+
+
+        const reservedReservation = await this.client.createReservation("customerId", false, vehicleId, startDate, endDate, this.errorHandler);
+        this.dataStore.set("reservation", reservedReservation);
+
+        if (reservedReservation) {
+            this.showMessage(`Created ${reservedReservation.name}!`)
+        } else {
+            this.errorHandler("Error creating!  Try again...");
+        }
+    }
+
+
     async renderVehicle(){
         let resultArea = document.getElementById("Vehicle-Description");
         const vehicle = this.dataStore.getVehicle();
