@@ -13,7 +13,7 @@ export default class RentalClient extends BaseClass {
 
     constructor(props = {}){
         super();
-        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles'];
+        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles', 'createReservation'];
         this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
@@ -68,6 +68,22 @@ export default class RentalClient extends BaseClass {
             return response.data;
         }catch (error){
             this.handleError("getAllVehicles", error, errorCallback)
+        }
+    }
+
+    async createReservation(customerId, payed, vehicleId, startData, endData, errorCallback) {
+        try {
+            const response = await this.client.post('rental/reservation', {
+                "customerId" : customerId,
+                "payed" : payed,
+                "vehicleId" : vehicleId,
+                "startData" : startData,
+                "endData" : endData,
+
+            });
+            return response.data;
+        } catch (error) {
+            this.handleError("createReservation", error, errorCallback);
         }
     }
     /**

@@ -37,8 +37,17 @@ class VehicleDescriptionPage extends BaseClass {
                         <div>RetailPrice: ${vehicle.retailPrice} </div>
                         <div>Mileage: ${vehicle.mileage}</div>
                         <div>Type: ${vehicle.vehicleType}</div>
-                        <div>Make: ${vehicle.make}</div
+                        <div>Make: ${vehicle.make}</div>
                         <div>Images: ${vehicle.images}</div>
+                        <form class="card-content" id="create-form">
+                        <p class="form-field">
+                        <label>Start Date</label>
+                        <input type="date" required class="validated-field" id="start-date">
+                        <label>End Date</label>
+                        <input type="date" required class="validated-field" id="end-date">
+                        </p>
+                        <button type="submit">Book It!</button>
+                        </form>
                         </div>
                 `;
 

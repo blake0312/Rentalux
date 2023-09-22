@@ -38,7 +38,7 @@ class VehicleBrowsePage extends BaseClass {
                         <div>RetailPrice: ${vehicle.retailPrice} </div>
                         <div>Mileage: ${vehicle.mileage}</div>
                         <div>Type: ${vehicle.vehicleType}</div>
-                        <div>Make: ${vehicle.make}</div
+                        <div>Make: ${vehicle.make}</div>
                         <div>Images: ${vehicle.images}</div>
                         </div>
                 `
