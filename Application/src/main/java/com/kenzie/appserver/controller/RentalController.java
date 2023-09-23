@@ -64,6 +64,22 @@ public class RentalController {
         return ResponseEntity.ok(convertToReservationResponse(data));
     }
 
+    @PutMapping("/reservation/{id}")
+    public ResponseEntity<LambdaReservationResponse> updateReservation(@PathVariable String id, @RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest){
+        ReservationData data = convertToReservationDataUpdate(id, lambdaReservationCreateRequest);
+        ReservationData reservationDataReturn = rentalService.updateReservation(data);
+
+        return ResponseEntity.ok(convertToReservationResponse(reservationDataReturn));
+    }
+
+    @DeleteMapping("/reservation/{id}")
+    public ResponseEntity<Void> deleteReservation(@PathVariable String id){
+        rentalService.deleteReservation(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
     public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest){
         Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(), rentalCreateRequest.getName(),
                 rentalCreateRequest.getDescription(), rentalCreateRequest.getRetailPrice(),
@@ -103,6 +119,12 @@ public class RentalController {
 
     public ReservationData convertToReservationData(LambdaReservationCreateRequest request){
         String id = "Jacobus";
+
+        return  new ReservationData(id, request.getCustomerId(),request.isPayed(),
+                request.getVehicleId(),request.getStartData(),request.getEndData());
+    }
+
+    public ReservationData convertToReservationDataUpdate(String id, LambdaReservationCreateRequest request){
 
         return  new ReservationData(id, request.getCustomerId(),request.isPayed(),
                 request.getVehicleId(),request.getStartData(),request.getEndData());

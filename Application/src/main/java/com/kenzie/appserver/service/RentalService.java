@@ -57,6 +57,17 @@ public class RentalService {
 
         return lambdaServiceClient.setReservationData(data);
     }
+
+    public ReservationData updateReservation(ReservationData reservationData){
+        Gson gson = new Gson();
+        String data = gson.toJson(reservationData);
+
+        return lambdaServiceClient.updateReservationData(data);
+    }
+
+    public void deleteReservation(String id){
+        lambdaServiceClient.deleteReservationData(id);
+    }
     public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
         Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
                 vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),
