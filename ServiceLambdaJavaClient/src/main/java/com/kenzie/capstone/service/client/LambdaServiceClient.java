@@ -13,6 +13,8 @@ public class LambdaServiceClient {
 
     private static final String GET_RESERVATION_ENDPOINT = "reservation/{id}";
     private static final String SET_RESERVATION_ENDPOINT = "reservation";
+    private static final String UPDATE_RESERVATION_ENDPOINT = "reservation/update";
+    private static final String DELETE_RESERVATION_ENDPOINT = "reservation/delete/{id}";
     private ObjectMapper mapper;
 
     public LambdaServiceClient() {
@@ -34,12 +36,27 @@ public class LambdaServiceClient {
     public ReservationData setReservationData(String data) {
         EndpointUtility endpointUtility = new EndpointUtility();
         String response = endpointUtility.postEndpoint(SET_RESERVATION_ENDPOINT, data);
-        ReservationData exampleData;
+        ReservationData reservationData;
         try {
-            exampleData = mapper.readValue(response, ReservationData.class);
+            reservationData = mapper.readValue(response, ReservationData.class);
         } catch (Exception e) {
             throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
         }
-        return exampleData;
+        return reservationData;
+    }
+    public ReservationData updateReservationData(String data) {
+        EndpointUtility endpointUtility = new EndpointUtility();
+        String response = endpointUtility.postEndpoint(UPDATE_RESERVATION_ENDPOINT, data);
+        ReservationData reservationData;
+        try {
+            reservationData = mapper.readValue(response, ReservationData.class);
+        } catch (Exception e) {
+            throw new ApiGatewayException("Unable to map deserialize JSON: " + e);
+        }
+        return reservationData;
+    }
+    public void deleteReservationData(String id) {
+        EndpointUtility endpointUtility = new EndpointUtility();
+        endpointUtility.getEndpoint(DELETE_RESERVATION_ENDPOINT.replace("{id}", id));
     }
 }
