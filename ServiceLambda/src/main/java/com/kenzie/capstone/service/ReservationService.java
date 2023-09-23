@@ -42,4 +42,14 @@ public class ReservationService {
         ReservationRecord record = reservationDao.setReservationData(id, customerID, payed, vehicleId, startDate, endDate);
         return new ReservationData(id, customerID, payed, vehicleId, startDate, endDate);
     }
+
+    public ReservationData updateReservationData(String reservationId, String customerId, boolean payed, String vehicleId, String startDate, String endDate){
+        ReservationRecord record = reservationDao.setReservationData(reservationId,customerId, payed, vehicleId, startDate, endDate);
+        return new ReservationData(record.getId(), record.getCustomerId(), record.isPayed(),
+                record.getVehicleId(), record.getStartData(), record.getEndData());
+    }
+
+    public void deleteReservation(String id){
+        reservationDao.deleteReservation(id);
+    }
 }

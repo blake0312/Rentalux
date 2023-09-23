@@ -73,4 +73,11 @@ public class reservationDao {
 
         return reservationRecord;
     }
+
+    public void deleteReservation(String id){
+        ReservationRecord record = new ReservationRecord();
+        record.setId(id);
+        mapper.delete(record);
+    }
+
 }
