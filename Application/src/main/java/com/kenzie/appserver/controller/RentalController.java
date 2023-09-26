@@ -79,6 +79,15 @@ public class RentalController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/reservation/all")
+    public ResponseEntity<List<LambdaReservationResponse>> getAllReservation(){
+        List<ReservationData> reservationData = rentalService.getAllReservation("all");
+
+        return ResponseEntity.ok(reservationData.stream()
+                .map(this::convertToReservationResponse)
+                .collect(Collectors.toList()));
+    }
+
 
     public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest){
         Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(), rentalCreateRequest.getName(),

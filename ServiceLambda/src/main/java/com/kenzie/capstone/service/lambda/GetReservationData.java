@@ -37,6 +37,7 @@ public class GetReservationData implements RequestHandler<APIGatewayProxyRequest
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
+        //?id = all
         String id = input.getPathParameters().get("id");
 
         if (id == null || id.length() == 0) {

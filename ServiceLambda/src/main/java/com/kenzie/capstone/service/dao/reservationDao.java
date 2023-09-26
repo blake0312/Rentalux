@@ -42,10 +42,12 @@ public class reservationDao {
     }
 
     public List<ReservationRecord> getReservationData(String id) {
-        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-                .withFilterExpression("vehicleId = :value")
-                .withExpressionAttributeValues(Map.of(":value", new AttributeValue().withS(id)))
-                .withConsistentRead(false);
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+        if(!id.equals("all")){
+            scanExpression.withFilterExpression("vehicleId = :value");
+            scanExpression.withExpressionAttributeValues(Map.of(":value", new AttributeValue().withS(id)));
+            scanExpression.withConsistentRead(false);
+        }
 
         return mapper.scan(ReservationRecord.class, scanExpression);
     }
