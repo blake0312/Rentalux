@@ -13,7 +13,8 @@ export default class RentalClient extends BaseClass {
 
     constructor(props = {}) {
         super();
-        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles', 'createReservation', 'updateReservation', 'deleteReservation'];
+        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles',
+            'createReservation', 'updateReservation', 'deleteReservation','getAllReservations'];
         this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
@@ -112,6 +113,14 @@ export default class RentalClient extends BaseClass {
         }
     }
 
+    async getAllReservations(errorCallback) {
+        try {
+            const response = await this.client.get(`rental/reservation/all`);
+            return response.data;
+        } catch (error) {
+            this.handleError("getAllReservations", error, errorCallback)
+        }
+    }
     /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.
