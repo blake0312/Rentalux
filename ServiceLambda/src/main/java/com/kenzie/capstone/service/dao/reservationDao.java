@@ -51,7 +51,15 @@ public class reservationDao {
 
         return mapper.scan(ReservationRecord.class, scanExpression);
     }
+    public ReservationRecord getReservationHashKey(String id){
+        ReservationRecord record = new ReservationRecord();
+        record.setId(id);
 
+        DynamoDBQueryExpression<ReservationRecord> queryExpression = new DynamoDBQueryExpression<ReservationRecord>()
+                .withHashKeyValues(record);
+
+        return mapper.query(ReservationRecord.class, queryExpression).get(0);
+    }
     public ReservationRecord setReservationData(String id, String customerId, boolean payed, String vehicleId,
                                                 String startData, String endData) {
         ReservationRecord reservationRecord = new ReservationRecord();
@@ -77,8 +85,7 @@ public class reservationDao {
     }
 
     public void deleteReservation(String id){
-        ReservationRecord record = new ReservationRecord();
-        record.setId(id);
+        ReservationRecord record = getReservationHashKey(id);
         mapper.delete(record);
     }
 

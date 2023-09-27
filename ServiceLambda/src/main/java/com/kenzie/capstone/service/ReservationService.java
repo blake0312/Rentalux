@@ -10,6 +10,7 @@ import com.kenzie.capstone.service.model.ReservationRecord;
 
 import javax.inject.Inject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,9 +33,7 @@ public class ReservationService {
                             s.getVehicleId(), s.getStartData(), s.getEndData()))
                     .collect(Collectors.toList());
         }
-        return null;
-
-
+        return Collections.emptyList();
     }
 
     public ReservationData setReservationData(String customerID, boolean payed, String vehicleId, String startDate, String endDate) {
