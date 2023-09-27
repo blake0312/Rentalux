@@ -68,6 +68,11 @@ public class RentalService {
     public void deleteReservation(String id){
         lambdaServiceClient.deleteReservationData(id);
     }
+
+    public List<ReservationData> getAllReservation(String id){
+        return lambdaServiceClient.getReservationData(id);
+    }
+
     public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
         Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
                 vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),

@@ -11,9 +11,9 @@ import axios from 'axios'
  */
 export default class RentalClient extends BaseClass {
 
-    constructor(props = {}){
+    constructor(props = {}) {
         super();
-        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles', 'createReservation'];
+        const methodsToBind = ['clientLoaded', 'getRental', 'createRental', 'getAllVehicles', 'createReservation', 'updateReservation', 'deleteReservation'];
         this.bindClassMethods(methodsToBind, this);
         this.props = props;
         this.clientLoaded(axios);
@@ -25,7 +25,7 @@ export default class RentalClient extends BaseClass {
      */
     clientLoaded(client) {
         this.client = client;
-        if (this.props.hasOwnProperty("onReady")){
+        if (this.props.hasOwnProperty("onReady")) {
             this.props.onReady();
         }
     }
@@ -49,12 +49,12 @@ export default class RentalClient extends BaseClass {
         try {
             const response = await this.client.post(`rental`, {
                 "name": name,
-                "description" : description,
-                "retailPrice" : retailPrice,
-                "mileage" : mileage,
-                "vehicleType" : vehicleType,
-                "make" : make,
-                "images" : images
+                "description": description,
+                "retailPrice": retailPrice,
+                "mileage": mileage,
+                "vehicleType": vehicleType,
+                "make": make,
+                "images": images
             });
             return response.data;
         } catch (error) {
@@ -62,23 +62,23 @@ export default class RentalClient extends BaseClass {
         }
     }
 
-    async getAllVehicles(errorCallback){
+    async getAllVehicles(errorCallback) {
         try {
-            const response = await this.client.get('rental/all');
+            const response = await this.client.get(`rental/all`);
             return response.data;
-        }catch (error){
+        } catch (error) {
             this.handleError("getAllVehicles", error, errorCallback)
         }
     }
 
     async createReservation(customerId, payed, vehicleId, startData, endData, errorCallback) {
         try {
-            const response = await this.client.post('rental/reservation', {
-                "customerId" : customerId,
-                "payed" : payed,
-                "vehicleId" : vehicleId,
-                "startData" : startData,
-                "endData" : endData,
+            const response = await this.client.post(`rental/reservation`, {
+                "customerId": customerId,
+                "payed": payed,
+                "vehicleId": vehicleId,
+                "startData": startData,
+                "endData": endData,
 
             });
             return response.data;
@@ -86,6 +86,32 @@ export default class RentalClient extends BaseClass {
             this.handleError("createReservation", error, errorCallback);
         }
     }
+
+    async updateReservation(id, customerId, payed, vehicleId, startData, endData, errorCallback) {
+        try {
+            const response = await this.client.put(`rental/reservation/${id}`, {
+                "customerId": customerId,
+                "payed": payed,
+                "vehicleId": vehicleId,
+                "startData": startData,
+                "endData": endData,
+
+            });
+            return response.data;
+        } catch (error) {
+            this.handleError("updateReservation", error, errorCallback);
+        }
+    }
+
+    async deleteReservation(id, errorCallback) {
+        try {
+            const response = await this.client.delete(`rental/reservation/${id}`);
+            return response.data;
+        } catch (error) {
+            this.handleError("deleteReservation", error, errorCallback);
+        }
+    }
+
     /**
      * Helper method to log the error and run any error functions.
      * @param error The error received from the server.
