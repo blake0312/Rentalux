@@ -9,7 +9,7 @@ class ReservationManagementPage extends BaseClass {
 
     constructor() {
         super();
-        this.bindClassMethods(['renderVehicles'], this);
+        this.bindClassMethods(['renderReservation'], this);
         this.dataStore = new DataStore();
         this.client = new RentalClient();
     }
@@ -18,28 +18,28 @@ class ReservationManagementPage extends BaseClass {
      * Once the page has loaded, set up the event handlers and fetch the concert list.
      */
     async mount() {
-        const vehicles = await this.client.getAllVehicles();
-        this.dataStore.setVehicles(vehicles);
-        await this.renderVehicles();
+        const reservation = await this.client.getAllReservations();
+        this.dataStore.set("reservations", reservation);
+        await this.renderReservation();
     }
-    async renderVehicles(){
+    async renderReservation(){
         let resultArea = document.getElementById("Reservation-Management");
 
-        const vehicles = this.dataStore.getVehicles();
+        const reservations = this.dataStore.get("reservations");
 
-        if (vehicles && vehicles.length > 0){
-            resultArea.innerHTML = vehicles
+        if (reservations && reservations.length > 0){
+            resultArea.innerHTML = reservations
                 .map(
-                    (vehicle) => `
+                    (reservation) => `
                         <div class = "card">
-                        <div id = "id"> Id: ${vehicle.id}</div>
-                        <a href="vehicle-details.html?id=${vehicle.id}">Name: ${vehicle.name} </a>
-                        <div>Description: ${vehicle.description}</div>
-                        <div>RetailPrice: ${vehicle.retailPrice} </div>
-                        <div>Mileage: ${vehicle.mileage}</div>
-                        <div>Type: ${vehicle.vehicleType}</div>
-                        <div>Make: ${vehicle.make}</div>
-                        <div>Images: ${vehicle.images}</div>
+                        <div id = "id"> Id: ${reservation.id}</div>
+                   
+                        <div>Customer Id: ${reservation.customerId}</div>
+                        <div>Paid: ${reservation.payed} </div>
+                        <div>Vehicle Id: ${reservation.vehicleId}</div>
+                        <div>Start Date: ${reservation.startData}</div>
+                        <div>End Date: ${reservation.endData}</div>
+                       
                         </div>
                 `
                 )
@@ -47,3 +47,12 @@ class ReservationManagementPage extends BaseClass {
         }
     }
 }
+
+
+
+const main = async () => {
+    const reservationManagementPage = new ReservationManagementPage();
+    await reservationManagementPage.mount();
+};
+
+window.addEventListener('DOMContentLoaded', main);
