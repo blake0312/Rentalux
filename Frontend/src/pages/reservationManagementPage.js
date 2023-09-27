@@ -38,10 +38,22 @@ class ReservationManagementPage extends BaseClass {
                         <div>Vehicle Id: ${reservation.vehicleId}</div>
                         <div>Start Date: ${reservation.startData}</div>
                         <div>End Date: ${reservation.endData}</div>
+                        <button class ="remove-button" id = "${reservation.id}">Delete</button>
                         </div>
                 `
                 )
                 .join("");
+            const removeButtons = resultArea.querySelectorAll('.remove-button');
+            removeButtons.forEach((button) => {
+                button.addEventListener('click', async () => { const reservationId = button.id;
+                    try {
+                        await this.client.deleteReservation(reservationId, this.errorHandler);
+                        await this.mount();
+                    } catch (error) {
+                        console.log("delete has failed!", error)
+                    }
+                })
+            })
         }
     }
 }
