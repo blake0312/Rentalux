@@ -32,14 +32,12 @@ class ReservationManagementPage extends BaseClass {
                 .map(
                     (reservation) => `
                         <div class = "card">
-                        <div id = "id"> Id: ${reservation.id}</div>
-                   
+                        <a href="reservation.html?reservationId=${reservation.id}" id="id"> Id: ${reservation.id}</a>
                         <div>Customer Id: ${reservation.customerId}</div>
                         <div>Paid: ${reservation.payed} </div>
                         <div>Vehicle Id: ${reservation.vehicleId}</div>
                         <div>Start Date: ${reservation.startData}</div>
                         <div>End Date: ${reservation.endData}</div>
-                       
                         </div>
                 `
                 )
