@@ -33,7 +33,7 @@ public class DeleteReservationData implements RequestHandler<APIGatewayProxyRequ
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
 
-        String id = input.getPathParameters().get("id");
+        String id = input.getBody();
 
         if (id == null || id.length() == 0) {
             return response
@@ -45,8 +45,7 @@ public class DeleteReservationData implements RequestHandler<APIGatewayProxyRequ
             reservationService.deleteReservation(id);
 
             return response
-                    .withStatusCode(204);
-
+                    .withStatusCode(200);
 
         } catch (Exception e) {
             return response

@@ -14,7 +14,7 @@ public class LambdaServiceClient {
     private static final String GET_RESERVATION_ENDPOINT = "reservation/{id}";
     private static final String SET_RESERVATION_ENDPOINT = "reservation";
     private static final String UPDATE_RESERVATION_ENDPOINT = "reservation/update";
-    private static final String DELETE_RESERVATION_ENDPOINT = "reservation/delete/{id}";
+    private static final String DELETE_RESERVATION_ENDPOINT = "reservation/delete";
     private ObjectMapper mapper;
 
     public LambdaServiceClient() {
@@ -57,6 +57,6 @@ public class LambdaServiceClient {
     }
     public void deleteReservationData(String id) {
         EndpointUtility endpointUtility = new EndpointUtility();
-        endpointUtility.getEndpoint(DELETE_RESERVATION_ENDPOINT.replace("{id}", id));
+        endpointUtility.postEndpoint(DELETE_RESERVATION_ENDPOINT, id);
     }
 }
