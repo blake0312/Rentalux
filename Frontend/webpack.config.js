@@ -12,6 +12,7 @@ module.exports = {
     vehicleBrowsePage: path.resolve(__dirname, 'src', 'pages', 'vehicleBrowsePage.js'),
     vehicleDescriptionPage: path.resolve(__dirname, 'src', 'pages', 'vehicleDescriptionPage.js'),
     reservationManagementPage: path.resolve(__dirname, 'src', 'pages', 'reservationManagementPage.js'),
+    reservationPage: path.resolve(__dirname, 'src', 'pages', 'reservationPage.js')
 
   },
   output: {
@@ -50,6 +51,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/reservationManagement.html',
       filename: 'reservationManagement.html',
+      inject: false
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/reservation.html',
+      filename: 'reservation.html',
       inject: false
     }),
     new CopyPlugin({
