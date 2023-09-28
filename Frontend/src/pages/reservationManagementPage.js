@@ -22,17 +22,37 @@ class ReservationManagementPage extends BaseClass {
         this.dataStore.set("reservations", reservation);
         await this.renderReservation();
     }
+
+    async buildURL(reservation) {
+        let id = reservation.id;
+        let customerId = reservation.customerId;
+        let paid = reservation.payed;
+        let vehicleId = reservation.vehicleId;
+        let startDate = reservation.startData;
+        let endDate = reservation.endData;
+
+        return "reservation.html?id=" + id + "&customerId=" + customerId + "&paid=" + paid + "&vehicleId=" + vehicleId +
+            "&startDate=" + startDate + "&endDate=" + endDate;
+
+    }
     async renderReservation(){
         let resultArea = document.getElementById("Reservation-Management");
 
         const reservations = this.dataStore.get("reservations");
 
         if (reservations && reservations.length > 0){
+            const urls = reservations.map(
+                async (reservation) => {
+                    return await this.buildURL(reservation);
+                }
+            )
+            const urlPromises = await Promise.all(urls);
             resultArea.innerHTML = reservations
                 .map(
-                    (reservation) => `
+                    (reservation, index) => {
+                        return`
                         <div class = "card">
-                        <a href="reservation.html?reservationId=${reservation.id}" id="id"> Id: ${reservation.id}</a>
+                        <a href="${urlPromises[index]}" id="id"> Id: ${reservation.id}</a>
                         <div>Customer Id: ${reservation.customerId}</div>
                         <div>Paid: ${reservation.payed} </div>
                         <div>Vehicle Id: ${reservation.vehicleId}</div>
@@ -40,8 +60,8 @@ class ReservationManagementPage extends BaseClass {
                         <div>End Date: ${reservation.endData}</div>
                         <button class ="remove-button" id = "${reservation.id}">Delete</button>
                         </div>
-                `
-                )
+                `;
+                    })
                 .join("");
             const removeButtons = resultArea.querySelectorAll('.remove-button');
             removeButtons.forEach((button) => {
