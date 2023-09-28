@@ -19,9 +19,19 @@ class ReservationPage extends BaseClass {
      */
     async mount() {
         const urlParams = new URLSearchParams(window.location.search);
-        const reservationId = urlParams.get('reservationId');
-        const reservation = await this.client.getRental(reservationId, this.errorHandler);
-        this.dataStore.set("reservation", reservation);
+        const reservationId = urlParams.get('id');
+        const customerId = urlParams.get('customerId');
+        const paid = urlParams.get('paid');
+        const vehicleId = urlParams.get('vehicleId');
+        const startDate = urlParams.get('startDate');
+        const endDate = urlParams.get('endDate');
+
+        this.dataStore.set("id", reservationId);
+        this.dataStore.set("customerId", customerId);
+        this.dataStore.set("paid", paid);
+        this.dataStore.set("vehicleId", vehicleId);
+        this.dataStore.set("startDate", startDate);
+        this.dataStore.set("endDate", endDate);
         await this.renderReservation();
         document.getElementById('update-form').addEventListener('submit', this.onUpdate);
     }
@@ -30,8 +40,7 @@ class ReservationPage extends BaseClass {
         // Prevent the page from refreshing on form submit
         event.preventDefault();
 
-        let reservation = this.dataStore.get("reservation");
-        let reservationId = reservation.id;
+        let reservationId = this.dataStore.get("id");
         let customerId = document.getElementById("customerId").value;
         let paid = document.getElementById("paid").value;
         let vehicleId = document.getElementById("vehicleId").value;
@@ -52,22 +61,27 @@ class ReservationPage extends BaseClass {
 
     async renderReservation(){
         let resultArea = document.getElementById("reservation");
-        const reservation = this.dataStore.get("reservation");
+        let customerId = this.dataStore.get("customerId");
+        let paid = this.dataStore.get("paid");
+        let vehicleId = this.dataStore.get("vehicleId");
+        let startDate = this.dataStore.get("startDate");
+        let endDate = this.dataStore.get("endDate");
+
         resultArea.innerHTML =
             `
                         <div class = "card">
                         <form class="card-content" id="update-form">
                         <p class="form-field">
                         <label>Customer Id</label>
-                        <input type="text" required class="validated-field" id="customerId" value="${reservation.customerId}">
+                        <input type="text" required class="validated-field" id="customerId" value="${customerId}">
                         <label>Paid</label>
-                        <input type="checkbox" required class="validated-field" id="paid" value="${reservation.payed}">
+                        <input type="checkbox" required class="validated-field" id="paid" value="${paid}">
                         <label>Vehicle Id</label>
-                        <input type="text" required class="validated-field" id="vehicleId" value="${reservation.vehicleId}">
+                        <input type="text" required class="validated-field" id="vehicleId" value="${vehicleId}">
                         <label>Start Date</label>
-                        <input type="date" required class="validated-field" id="startDate" value="${reservation.startData}">
+                        <input type="date" required class="validated-field" id="startDate" value="${startDate}">
                         <label>End Date</label>
-                        <input type="date" required class="validated-field" id="endDate" value="${reservation.endData}">
+                        <input type="date" required class="validated-field" id="endDate" value="${endDate}">
                         </p>
                         <button type="submit">Update</button>
                         </form>
