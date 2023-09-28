@@ -1,13 +1,10 @@
 package com.kenzie.capstone.service.dao;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.model.ReservationRecord;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
@@ -89,4 +86,35 @@ public class reservationDao {
         mapper.delete(record);
     }
 
+    public void deleteReservation(ReservationRecord record){
+        mapper.delete(record);
+    }
+
+    public ReservationRecord updateReservationData(String id, String customerId, boolean payed, String vehicleId,
+                                                String startData, String endData) {
+        ReservationRecord reservationRecord = getReservationHashKey(id);
+
+        if(!vehicleId.equals(reservationRecord.getVehicleId())){
+            deleteReservation(reservationRecord);
+            reservationRecord = setReservationData(id, customerId, payed, vehicleId, startData, endData);
+        } else {
+            reservationRecord.setCustomerId(customerId);
+            reservationRecord.setPayed(payed);
+            reservationRecord.setStartData(startData);
+            reservationRecord.setEndData(endData);
+
+            updateReservationData(reservationRecord);
+        }
+
+        return reservationRecord;
+    }
+
+    public void updateReservationData(ReservationRecord record){
+
+        try {
+            mapper.save(record);
+        } catch (DynamoDBMappingException e) {
+           throw new RuntimeException("Error updating", e.getCause());
+        }
+    }
 }
