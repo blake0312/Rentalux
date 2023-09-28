@@ -43,7 +43,7 @@ public class ReservationService {
     }
 
     public ReservationData updateReservationData(String reservationId, String customerId, boolean payed, String vehicleId, String startDate, String endDate){
-        ReservationRecord record = reservationDao.setReservationData(reservationId,customerId, payed, vehicleId, startDate, endDate);
+        ReservationRecord record = reservationDao.updateReservationData(reservationId,customerId, payed, vehicleId, startDate, endDate);
         return new ReservationData(record.getId(), record.getCustomerId(), record.isPayed(),
                 record.getVehicleId(), record.getStartData(), record.getEndData());
     }
