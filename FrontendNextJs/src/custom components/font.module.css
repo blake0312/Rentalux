@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'custom-font'; 
+    src: url('../../public/Samatha.otf') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .custom-font-element {
+    font-family: 'custom-font', sans-serif; 
+  }
