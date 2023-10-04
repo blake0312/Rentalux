@@ -1,6 +1,7 @@
 package com.kenzie.appserver.service;
 
 import com.google.gson.Gson;
+import com.kenzie.appserver.config.CacheStore;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.service.model.Vehicle;
@@ -18,6 +19,7 @@ import java.util.List;
 public class RentalService {
     private RentalRepository rentalRepository;
     private LambdaServiceClient lambdaServiceClient;
+    private CacheStore cache;
 
     public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient) {
         this.rentalRepository = rentalRepository;
@@ -66,11 +68,25 @@ public class RentalService {
     }
 
     public void deleteReservation(String id){
+        cache.evict(id);
         lambdaServiceClient.deleteReservationData(id);
     }
 
     public List<ReservationData> getAllReservation(String id){
-        return lambdaServiceClient.getReservationData(id);
+
+        List<ReservationData> data = cache.get(id);
+
+        if(data != null){
+            return data;
+        }
+
+        data = lambdaServiceClient.getReservationData(id);
+
+        if(data != null){
+            cache.add(id, data);
+        }
+
+        return data;
     }
 
     public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
