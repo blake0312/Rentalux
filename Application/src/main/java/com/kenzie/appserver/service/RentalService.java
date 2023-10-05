@@ -21,9 +21,10 @@ public class RentalService {
     private LambdaServiceClient lambdaServiceClient;
     private CacheStore cache;
 
-    public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient) {
+    public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient, CacheStore cache) {
         this.rentalRepository = rentalRepository;
         this.lambdaServiceClient = lambdaServiceClient;
+        this.cache = cache;
     }
 
     public VehicleWithLambdaInfo findById(String id) {
@@ -56,19 +57,19 @@ public class RentalService {
     public ReservationData addNewReservation(ReservationData reservationData){
         Gson gson = new Gson();
         String data = gson.toJson(reservationData);
-
+        cache.evict("all");
         return lambdaServiceClient.setReservationData(data);
     }
 
     public ReservationData updateReservation(ReservationData reservationData){
         Gson gson = new Gson();
         String data = gson.toJson(reservationData);
-
+        cache.evict("all");
         return lambdaServiceClient.updateReservationData(data);
     }
 
     public void deleteReservation(String id){
-        cache.evict(id);
+        cache.evict("all");
         lambdaServiceClient.deleteReservationData(id);
     }
 
