@@ -21,9 +21,10 @@ public class RentalService {
     private LambdaServiceClient lambdaServiceClient;
     private CacheStore cache;
 
-    public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient) {
+    public RentalService(RentalRepository rentalRepository, LambdaServiceClient lambdaServiceClient, CacheStore cache) {
         this.rentalRepository = rentalRepository;
         this.lambdaServiceClient = lambdaServiceClient;
+        this.cache = cache;
     }
 
     public VehicleWithLambdaInfo findById(String id) {
