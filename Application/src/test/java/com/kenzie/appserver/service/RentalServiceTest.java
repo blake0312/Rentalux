@@ -1,5 +1,6 @@
 package com.kenzie.appserver.service;
 
+import com.kenzie.appserver.controller.model.LambdaReservationCreateRequest;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.model.VehicleType;
@@ -161,5 +162,4 @@ public class RentalServiceTest {
             }
         }
     }
-
 }

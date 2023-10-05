@@ -14,6 +14,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,9 +24,11 @@ import static org.mockito.Mockito.when;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ReservationServiceTest {
 
-    /** ------------------------------------------------------------------------
-     *  expenseService.getExpenseById
-     *  ------------------------------------------------------------------------ **/
+    /**
+     * ------------------------------------------------------------------------
+     * expenseService.getExpenseById
+     * ------------------------------------------------------------------------
+     **/
 
     private reservationDao reservationDao;
     private ReservationService reservationService;
@@ -46,11 +50,11 @@ class ReservationServiceTest {
 
         // WHEN
         ReservationData response = this.reservationService.setReservationData("customerId",
-                true, "vehicleId", "startDate", "endDate" );
+                true, "vehicleId", "startDate", "endDate");
 
         // THEN
-        verify(reservationDao, times(1)).setReservationData(idCaptor.capture(), customerIdCaptor.capture(),isPayedCaptor.capture(),
-                vehicleIdCaptor.capture(),startDateCaptor.capture(),endDateCaptor.capture());
+        verify(reservationDao, times(1)).setReservationData(idCaptor.capture(), customerIdCaptor.capture(), isPayedCaptor.capture(),
+                vehicleIdCaptor.capture(), startDateCaptor.capture(), endDateCaptor.capture());
 
         assertNotNull(response, "A response is returned");
         assertNotNull(idCaptor.getValue(), "An ID is generated");
@@ -90,10 +94,30 @@ class ReservationServiceTest {
         assertEquals(id, idCaptor.getValue(), "The correct id is used");
         assertNotNull(response, "A response is returned");
         assertEquals(1, response.size());
-        assertEquals(id,response.get(0).getId());
-        assertEquals(data,response.get(0).getCustomerId());
-   }
+        assertEquals(id, response.get(0).getId());
+        assertEquals(data, response.get(0).getCustomerId());
+    }
 
     // Write additional tests here
+    @Test
+    void deleteReservationDataWithReservationRecordTest() {
+        ArgumentCaptor<String> idCaptor = ArgumentCaptor.forClass(String.class);
+        // GIVEN
+        String id = "fakeid";
+        String data = "somedata";
 
+        ReservationRecord record = new ReservationRecord();
+        record.setId(id);
+        record.setCustomerId(data);
+        record.setPayed(true);
+        record.setVehicleId("vehicleId");
+        record.setStartData("start");
+        record.setEndData("end");
+
+        // WHEN
+        this.reservationService.deleteReservation(record.getId());
+
+        // THEN
+        verify(reservationDao, times(1)).deleteReservation(idCaptor.capture());
+    }
 }
