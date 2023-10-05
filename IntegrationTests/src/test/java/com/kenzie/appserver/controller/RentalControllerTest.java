@@ -1,6 +1,10 @@
 package com.kenzie.appserver.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.Gson;
 import com.kenzie.appserver.IntegrationTest;
+import com.kenzie.appserver.controller.model.LambdaReservationCreateRequest;
+import com.kenzie.appserver.controller.model.LambdaReservationResponse;
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.RentalService;
@@ -9,20 +13,25 @@ import com.kenzie.appserver.service.model.Vehicle;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.andreinc.mockneat.MockNeat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,6 +47,7 @@ class RentalControllerTest {
     private final MockNeat mockNeat = MockNeat.threadLocal();
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private static LambdaReservationResponse id;
 
     @Test
     public void getById_Exists() throws Exception {
@@ -129,6 +139,82 @@ class RentalControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    void addNewReservations() throws Exception {
+        // GIVEN
+        LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
+
+        String id = "id";
+
+        lambdaReservationCreateRequest.setId(id);
+        lambdaReservationCreateRequest.setCustomerId("customerId");
+        lambdaReservationCreateRequest.setPayed(true);
+        lambdaReservationCreateRequest.setVehicleId("vehicleId");
+        lambdaReservationCreateRequest.setStartData("startDate");
+        lambdaReservationCreateRequest.setEndData("endDate");
+
+        mapper.registerModule(new JavaTimeModule());
+
+        MvcResult mvcResult = mvc.perform(post("/rental/reservation")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(lambdaReservationCreateRequest)))
+                .andExpect(jsonPath("id")
+                        .exists())
+                .andExpect(jsonPath("customerId")
+                        .value(is("customerId")))
+                .andExpect(jsonPath("payed")
+                        .value(is(true)))
+                .andExpect(jsonPath("vehicleId")
+                        .value(is("vehicleId")))
+                .andExpect(jsonPath("startData")
+                        .value(is("startDate")))
+                .andExpect(jsonPath("endData")
+                        .value(is("endDate")))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+        Gson gson = new Gson();
+
+        RentalControllerTest.id = gson.fromJson(mvcResult.getResponse().getContentAsString(),
+                LambdaReservationResponse.class);
+    }
+
+    @Test
+    void updateReservations() throws Exception {
+        // GIVEN
+        LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
+        // GIVEN
+
+        String id = RentalControllerTest.id.getId();
+
+        lambdaReservationCreateRequest.setId(id);
+        lambdaReservationCreateRequest.setCustomerId("customer");
+        lambdaReservationCreateRequest.setPayed(false);
+        lambdaReservationCreateRequest.setVehicleId("vehicle");
+        lambdaReservationCreateRequest.setStartData("start");
+        lambdaReservationCreateRequest.setEndData("end");
+
+        mapper.registerModule(new JavaTimeModule());
+
+        mvc.perform(put("/rental/reservation/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(lambdaReservationCreateRequest)))
+                .andExpect(jsonPath("id")
+                        .exists())
+                .andExpect(jsonPath("customerId")
+                        .value(is("customer")))
+                .andExpect(jsonPath("payed")
+                        .value(is(false)))
+                .andExpect(jsonPath("vehicleId")
+                        .value(is("vehicle")))
+                .andExpect(jsonPath("startData")
+                        .value(is("start")))
+                .andExpect(jsonPath("endData")
+                        .value(is("end")))
                 .andExpect(status().is2xxSuccessful());
     }
 }
