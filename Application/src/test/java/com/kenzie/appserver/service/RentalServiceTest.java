@@ -1,6 +1,6 @@
 package com.kenzie.appserver.service;
 
-import com.kenzie.appserver.controller.model.LambdaReservationCreateRequest;
+import com.kenzie.appserver.config.CacheStore;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.model.VehicleType;
@@ -22,12 +22,14 @@ public class RentalServiceTest {
     private RentalRepository rentalRepository;
     private RentalService rentalService;
     private LambdaServiceClient lambdaServiceClient;
+    private CacheStore cache;
 
     @BeforeEach
     void setup() {
         rentalRepository = mock(RentalRepository.class);
         lambdaServiceClient = mock(LambdaServiceClient.class);
-        rentalService = new RentalService(rentalRepository, lambdaServiceClient);
+        cache = mock(CacheStore.class);
+        rentalService = new RentalService(rentalRepository, lambdaServiceClient, cache);
     }
     /** ------------------------------------------------------------------------
      *  exampleService.findById
