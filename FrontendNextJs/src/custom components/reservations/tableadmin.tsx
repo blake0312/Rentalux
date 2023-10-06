@@ -37,10 +37,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useEffect, useState } from "react"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import  DatePickerFormUpdate  from "./UpdateReservationForm"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
+import DatePickerFormUpdate from "./UpdateReservationForm"
+import { Icons } from "@/constants"
+import { useLoading } from "../LoadingContext"
 
-export async function fetchData(): Promise<ReservationData[]> {
+export async function fetchData(): Promise<Reservation[]> {
   const url = "/rental/reservation/all";
 
   try {
@@ -58,7 +60,7 @@ export async function fetchData(): Promise<ReservationData[]> {
   }
 }
 
-export type ReservationData = {
+export type Reservation = {
   id: string
   customerId: string
   payed: boolean
@@ -69,8 +71,22 @@ export type ReservationData = {
 
 
 export default function DataTable() {
+  const { loading, loadingRowId, setGlobalLoading } = useLoading();
+  
+  const updateReservation = (updatedReservation: Reservation) => {
+    // Find the index of the reservation in data array
+    const updatedIndex = data.findIndex((r) => r.id === updatedReservation.id);
 
-  const columns: ColumnDef<ReservationData>[] = [
+    if (updatedIndex !== -1) {
+      // Update the reservation in data array
+      const updatedData = [...data];
+      updatedData[updatedIndex] = updatedReservation;
+
+      setFetchedData(updatedData);
+    }
+  };
+
+  const columns: ColumnDef<Reservation>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -164,15 +180,18 @@ export default function DataTable() {
         const reservation = row.original
 
         return (
-          
+
           <Dialog>
-            
+
             <DropdownMenu modal={false}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
+                {loading && loadingRowId === row.original.id ? (<Icons.spinner className="h-8 w-8 animate-spin p-0"/>)
+                  :
+                  <Button variant="ghost" className="h-8 w-8 p-0" >
+                    <span className="sr-only">Open menu</span>
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                }
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -185,48 +204,53 @@ export default function DataTable() {
                   </DropdownMenuItem>
                 </DialogTrigger>
               </DropdownMenuContent>
-          </DropdownMenu>
-          <DatePickerFormUpdate reservation={reservation}/> 
+            </DropdownMenu>
+            <DatePickerFormUpdate
+              reservation={reservation}
+              onUpdateSuccess={updateReservation}
+            />
           </Dialog>
         )
       },
     },
   ]
-  
-  const makeDeleteRequest = (id: string) => {
+
+  const makeDeleteRequest = async (id: string) => {
+    setGlobalLoading(true, id);
 
     const url = `/rental/reservation/${id}`;
-
-
-    fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          const updatedData = data.filter((reservation) => reservation.id !== id);
-          setFetchedData(updatedData);
-          toast({
-            title: "Reservation Deleted!",
-          })
-        } else {
-          toast({
-            title: "Reservation Delete Failed!",
-          })
-          throw new Error('Failed to delete the resource');
-        }
-      })
-      .catch((error) => {
-        // Handle any errors that occurred during the request
-        console.error('There was a problem with the DELETE request:', error);
+  
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+  
+      if (response.ok) {
+        const updatedData = data.filter((reservation) => reservation.id !== id);
+        setFetchedData(updatedData);
+        toast({
+          title: "Reservation Deleted!",
+        });
+      } else {
+        toast({
+          title: "Reservation Delete Failed!",
+        });
+        throw new Error('Failed to delete the resource');
+      }
+    } catch (error) {
+      // Handle any errors that occurred during the request
+      console.error('There was a problem with the DELETE request:', error);
+    } finally {
+      setGlobalLoading(false, "");
+    }
   };
 
 
-  
-  const [fetchedData, setFetchedData] = useState<ReservationData[] | null>(null);
+
+  const [fetchedData, setFetchedData] = useState<Reservation[] | null>(null);
 
   useEffect(() => {
     async function fetchDataAndStore() {
@@ -241,7 +265,7 @@ export default function DataTable() {
     fetchDataAndStore();
   }, []);
 
-  const data: ReservationData[] = fetchedData || [];
+  const data: Reservation[] = fetchedData || [];
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
