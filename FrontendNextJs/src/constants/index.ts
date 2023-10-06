@@ -1,3 +1,4 @@
+import {Loader2} from 'lucide-react';
 
 export const footerLinks = [
   {
@@ -10,3 +11,7 @@ export const footerLinks = [
     ],
   },
 ];
+
+export const Icons = {
+  spinner: Loader2,
+};

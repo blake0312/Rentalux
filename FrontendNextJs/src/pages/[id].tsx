@@ -12,7 +12,7 @@ const getData = async (id: string | string[]) => {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
+    await new Promise((resolve) => setTimeout(resolve, 100))
     const data = await response.json();
     return data;
   } catch (error) {

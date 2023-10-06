@@ -23,19 +23,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog"
+import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Reservation } from "./tablecustomer"
+import { useLoading } from "../LoadingContext"
 
 
 interface DatePickerFormProps {
-    reservation: {
-        id: string;
-        vehicleId: string;
-        customerId: string;
-        payed: boolean;
-        startData: string;
-        endData: string;
-      };
-  }
+  reservation: {
+    id: string;
+    vehicleId: string;
+    customerId: string;
+    payed: boolean;
+    startData: string;
+    endData: string;
+  };
+  onUpdateSuccess: (updatedReservation: Reservation) => void;
+}
 
 const FormSchema = z.object({
   startData: z.date({
@@ -46,55 +49,58 @@ const FormSchema = z.object({
   }),
 })
 
-export default function DatePickerFormUpdateClient({reservation}: DatePickerFormProps) {
+export default function DatePickerFormUpdateClient({ reservation, onUpdateSuccess}: DatePickerFormProps) {
+  const { loading, loadingRowId, setGlobalLoading } = useLoading();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      startData: reservation?.startData ? new Date(reservation.startData)  : undefined!,
+      startData: reservation?.startData ? new Date(reservation.startData) : undefined!,
       endData: reservation?.endData ? new Date(reservation.endData) : undefined!,
     }
   })
 
-  
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-         try{
-          const requestData = {
-            "customerId": reservation.customerId,
-            "payed": false,
-            "vehicleId": reservation.vehicleId,
-            "startData": data.startData, 
-            "endData": data.endData,     
-          };
-      
-        const url = `/rental/reservation/${reservation.id}`; 
-        const response = await fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData), 
-        });
+    setGlobalLoading(true, "")
+    try {
+      const requestData = {
+        "customerId": reservation.customerId,
+        "payed": false,
+        "vehicleId": reservation.vehicleId,
+        "startData": data.startData,
+        "endData": data.endData,
+      };
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }else{
-            toast({
-            title: "Reservation has been updated",
-            
-          })
-        }
-     }catch(error){
-        console.error("There was a problem", error)
-     }
+      const url = `/rental/reservation/${reservation.id}`;
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
 
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        toast({
+          title: "Reservation has been updated",
+
+        })
+        onUpdateSuccess({ ...reservation, ...requestData, startData: requestData.startData.toISOString(), endData: requestData.endData.toISOString() });
+      }
+    } catch (error) {
+      console.error("There was a problem", error)
+    }
+    setGlobalLoading(false, "")
     form.reset();
   }
 
   return (
     <Form {...form}>
-      
+
       <DialogContent>
-        
+
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <DialogHeader>
             <DialogTitle className="!text-primary">
@@ -103,96 +109,96 @@ export default function DatePickerFormUpdateClient({reservation}: DatePickerForm
             <DialogDescription>
             </DialogDescription>
           </DialogHeader>
-              <FormField 
-                control={form.control}
-                name="startData"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Start Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date()
-                          }
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormDescription>
-                      Start day to reserve from
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endData"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>End Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date()
-                          }
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormDescription>
-                      End day to reserve to
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <FormField
+            control={form.control}
+            name="startData"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Start Date</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date < new Date()
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  Start day to reserve from
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="endData"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>End Date</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date < new Date()
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>
+                  End day to reserve to
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <DialogFooter>
-          <DialogTrigger asChild>
-            <Button type="submit">Save Changes</Button>
-          </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button type="submit">Save Changes</Button>
+            </DialogTrigger>
           </DialogFooter>
         </form>
       </DialogContent>
