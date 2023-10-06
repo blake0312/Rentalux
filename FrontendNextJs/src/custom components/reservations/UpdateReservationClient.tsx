@@ -61,7 +61,7 @@ export default function DatePickerFormUpdateClient({ reservation, onUpdateSucces
 
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setGlobalLoading(true, "")
+    setGlobalLoading(true, reservation.id)
     try {
       const requestData = {
         "customerId": reservation.customerId,
