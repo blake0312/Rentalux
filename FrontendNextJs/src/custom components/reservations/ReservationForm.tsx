@@ -4,6 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
+import { Icons } from "@/constants";
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { cn } from "@/lib/utils"
@@ -43,9 +44,12 @@ const FormSchema = z.object({
   }),
 })
 
+
 export default function DatePickerForm({ vehicleId, reservations }: DatePickerFormProps) {
   const {user } = useUser();
-  
+
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -71,8 +75,9 @@ export default function DatePickerForm({ vehicleId, reservations }: DatePickerFo
   const [disabledDateRanges, setDisabledDateRanges] = useState(initialDisabledDateRanges);
 
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-         try{
-
+      setLoading(true);
+      try{
+      
           const requestData = {
             startData: data.startData, 
             endData: data.endData,     
@@ -99,7 +104,7 @@ export default function DatePickerForm({ vehicleId, reservations }: DatePickerFo
             end: new Date(data.endData),
           };
           setDisabledDateRanges([...disabledDateRanges, newReservation]);
-  
+          setLoading(false);
             toast({
             title: "Dates have been reserved",
           })
@@ -107,7 +112,7 @@ export default function DatePickerForm({ vehicleId, reservations }: DatePickerFo
      }catch(error){
         console.error("There was a problem", error)
      }
-
+     
     form.reset();
   }
 
@@ -202,7 +207,11 @@ export default function DatePickerForm({ vehicleId, reservations }: DatePickerFo
             </FormItem>
           )}
         />
-        <Button type="submit">Reserve</Button>
+        <Button type="submit" disabled={loading} className="">
+          {loading ? (<Icons.spinner className="h-4 w-12 animate-spin" />)
+           : ("Reserve")
+          }
+          </Button>
       </form>
     </Form>
   )

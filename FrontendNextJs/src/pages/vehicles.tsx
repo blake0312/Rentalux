@@ -12,7 +12,7 @@ const getData = async() =>{
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        await new Promise((resolve) => setTimeout(resolve, 200))
+        await new Promise((resolve) => setTimeout(resolve, 150))
         const data = await response.json();
         return data
     }catch(error){
