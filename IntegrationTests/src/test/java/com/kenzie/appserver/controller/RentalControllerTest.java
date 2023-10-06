@@ -13,13 +13,14 @@ import com.kenzie.appserver.service.model.Vehicle;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.andreinc.mockneat.MockNeat;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,14 +30,14 @@ import java.util.UUID;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @IntegrationTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RentalControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -55,8 +56,8 @@ class RentalControllerTest {
         images.add("image1");
         images.add("image2");
         String name = mockNeat.strings().valStr();
-        Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(),name, "v-8 twin turbo", 190000.00,
-        0.0, VehicleType.SEDAN,"Porsche", images);
+        Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(), name, "v-8 twin turbo", 190000.00,
+                0.0, VehicleType.SEDAN, "Porsche", images);
 
         Vehicle persistedVehicle = rentalService.addNewVehicle(vehicle);
         mvc.perform(get("/rental/{id}", persistedVehicle.getId())
@@ -133,7 +134,7 @@ class RentalControllerTest {
 
         mapper.registerModule(new JavaTimeModule());
 
-        rentalService.addNewVehicle(new Vehicle(UUID.randomUUID().toString(), name,description,retailPrice, mileage, vehicleType, make, images));
+        rentalService.addNewVehicle(new Vehicle(UUID.randomUUID().toString(), name, description, retailPrice, mileage, vehicleType, make, images));
 
         mvc.perform(get("/rental/all")
                         .accept(MediaType.APPLICATION_JSON)
@@ -143,6 +144,7 @@ class RentalControllerTest {
     }
 
     @Test
+    @Order(1)
     void addNewReservations() throws Exception {
         // GIVEN
         LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
@@ -183,6 +185,7 @@ class RentalControllerTest {
     }
 
     @Test
+    @Order(2)
     void updateReservations() throws Exception {
         // GIVEN
         LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
@@ -216,5 +219,30 @@ class RentalControllerTest {
                 .andExpect(jsonPath("endData")
                         .value(is("end")))
                 .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @Order(3)
+    void getAllReservation() throws Exception {
+
+        mapper.registerModule(new JavaTimeModule());
+
+        mvc.perform(get("/rental/reservation/all")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @Order(4)
+    void deleteReservation() throws Exception {
+        // GIVEN
+        String id = RentalControllerTest.id.getId();
+
+        mapper.registerModule(new JavaTimeModule());
+
+        mvc.perform(delete("/rental/reservation/{id}", id))
+                .andExpect(status().isNoContent());
     }
 }
