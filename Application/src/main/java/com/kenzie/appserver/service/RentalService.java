@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.kenzie.appserver.config.CacheStore;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.RentalRepository;
+import com.kenzie.appserver.service.model.Reservation;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,7 +30,9 @@ public class RentalService {
     }
 
     public VehicleWithLambdaInfo findById(String id) {
-        List<ReservationData> dataFromLambda = lambdaServiceClient.getReservationData(id);
+        List<Reservation> dataFromLambda = lambdaServiceClient.getReservationData(id).stream()
+                .map(this::convertToReservation)
+                .collect(Collectors.toList());
 
         Vehicle dataFromDynamo = rentalRepository
                 .findById(id)
@@ -54,18 +58,18 @@ public class RentalService {
         return vehicles;
     }
 
-    public ReservationData addNewReservation(ReservationData reservationData){
+    public Reservation addNewReservation(Reservation reservation){
         Gson gson = new Gson();
-        String data = gson.toJson(reservationData);
+        String data = gson.toJson(reservation);
         cache.evict("all");
-        return lambdaServiceClient.setReservationData(data);
+        return convertToReservation(lambdaServiceClient.setReservationData(data));
     }
 
-    public ReservationData updateReservation(ReservationData reservationData){
+    public Reservation updateReservation(Reservation reservation){
         Gson gson = new Gson();
-        String data = gson.toJson(reservationData);
+        String data = gson.toJson(reservation);
         cache.evict("all");
-        return lambdaServiceClient.updateReservationData(data);
+        return convertToReservation(lambdaServiceClient.updateReservationData(data));
     }
 
     public void deleteReservation(String id){
@@ -73,15 +77,17 @@ public class RentalService {
         lambdaServiceClient.deleteReservationData(id);
     }
 
-    public List<ReservationData> getAllReservation(String id){
+    public List<Reservation> getAllReservation(String id){
 
-        List<ReservationData> data = cache.get(id);
+        List<Reservation> data = cache.get(id);
 
         if(data != null){
             return data;
         }
 
-        data = lambdaServiceClient.getReservationData(id);
+        data = lambdaServiceClient.getReservationData(id).stream()
+                .map(this::convertToReservation)
+                .collect(Collectors.toList());
 
         if(data != null){
             cache.add(id, data);
@@ -109,5 +115,12 @@ public class RentalService {
         vehicleRecord.setMake(vehicle.getMake());
         vehicleRecord.setImages(vehicle.getImages());
         return vehicleRecord;
+    }
+
+    public Reservation convertToReservation(ReservationData reservationData){
+        return new Reservation(reservationData.getId(), reservationData.getCustomerId(),
+                reservationData.isPayed(), reservationData.getVehicleId(), reservationData.getStartData(),
+                reservationData.getEndData());
+
     }
 }

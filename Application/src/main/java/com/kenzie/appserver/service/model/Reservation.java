@@ -8,6 +8,15 @@ public class Reservation {
     private String startData;
     private String endData;
 
+    public Reservation(String id, String customerId, boolean payed, String vehicleId, String startData, String endData) {
+        this.id = id;
+        this.customerId = customerId;
+        this.payed = payed;
+        this.vehicleId = vehicleId;
+        this.startData = startData;
+        this.endData = endData;
+    }
+
     public String getId() {
         return id;
     }
