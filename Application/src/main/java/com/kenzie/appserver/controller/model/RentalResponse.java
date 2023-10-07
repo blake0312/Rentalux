@@ -1,10 +1,9 @@
 package com.kenzie.appserver.controller.model;
 
-import com.amazonaws.services.ec2.model.Reservation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kenzie.appserver.repositories.model.VehicleType;
-import com.kenzie.capstone.service.model.ReservationData;
+import com.kenzie.appserver.service.model.Reservation;
 
 import java.util.List;
 
@@ -36,13 +35,13 @@ public class RentalResponse {
     private List<String> images;
 
     @JsonProperty("reservations")
-    private  List<ReservationData> reservations;
+    private  List<Reservation> reservations;
 
-    public List<ReservationData> getReservations() {
+    public List<Reservation> getReservations() {
         return reservations;
     }
 
-    public void setReservations(List<ReservationData> reservations) {
+    public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 

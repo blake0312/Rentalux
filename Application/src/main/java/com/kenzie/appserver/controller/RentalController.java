@@ -6,9 +6,9 @@ import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.controller.model.RentalResponse;
 import com.kenzie.appserver.service.RentalService;
 
+import com.kenzie.appserver.service.model.Reservation;
 import com.kenzie.appserver.service.model.Vehicle;
 import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
-import com.kenzie.capstone.service.model.ReservationData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +48,7 @@ public class RentalController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<RentalResponse>> getAll(){
+    public ResponseEntity<List<RentalResponse>> getAll() {
         List<Vehicle> vehicle = rentalService.getAllVehicles();
 
         return ResponseEntity.ok(vehicle.stream()
@@ -58,30 +58,30 @@ public class RentalController {
     }
 
     @PostMapping("/reservation")
-    public ResponseEntity<LambdaReservationResponse> addNewReservation(@RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest){
-        ReservationData data = rentalService.addNewReservation(convertToReservationData(lambdaReservationCreateRequest));
+    public ResponseEntity<LambdaReservationResponse> addNewReservation(@RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest) {
+        Reservation data = rentalService.addNewReservation(convertToReservation(lambdaReservationCreateRequest));
 
         return ResponseEntity.ok(convertToReservationResponse(data));
     }
 
     @PutMapping("/reservation/{id}")
-    public ResponseEntity<LambdaReservationResponse> updateReservation(@PathVariable String id, @RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest){
-        ReservationData data = convertToReservationDataUpdate(id, lambdaReservationCreateRequest);
-        ReservationData reservationDataReturn = rentalService.updateReservation(data);
+    public ResponseEntity<LambdaReservationResponse> updateReservation(@PathVariable String id, @RequestBody LambdaReservationCreateRequest lambdaReservationCreateRequest) {
+        Reservation data = convertToReservationUpdate(id, lambdaReservationCreateRequest);
+        Reservation reservationDataReturn = rentalService.updateReservation(data);
 
         return ResponseEntity.ok(convertToReservationResponse(reservationDataReturn));
     }
 
     @DeleteMapping("/reservation/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable String id){
+    public ResponseEntity<Void> deleteReservation(@PathVariable String id) {
         rentalService.deleteReservation(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/reservation/all")
-    public ResponseEntity<List<LambdaReservationResponse>> getAllReservation(){
-        List<ReservationData> reservationData = rentalService.getAllReservation("all");
+    public ResponseEntity<List<LambdaReservationResponse>> getAllReservation() {
+        List<Reservation> reservationData = rentalService.getAllReservation("all");
 
         return ResponseEntity.ok(reservationData.stream()
                 .map(this::convertToReservationResponse)
@@ -89,19 +89,19 @@ public class RentalController {
     }
 
 
-    public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest){
+    public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest) {
         Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(), rentalCreateRequest.getName(),
                 rentalCreateRequest.getDescription(), rentalCreateRequest.getRetailPrice(),
-                rentalCreateRequest.getMileage(),rentalCreateRequest.getVehicleType(),
+                rentalCreateRequest.getMileage(), rentalCreateRequest.getVehicleType(),
                 rentalCreateRequest.getMake(), rentalCreateRequest.getImages());
-        return  vehicle;
+        return vehicle;
     }
 
-    public RentalResponse rentalResponseHelperWithLambda(VehicleWithLambdaInfo withLambdaInfo){
+    public RentalResponse rentalResponseHelperWithLambda(VehicleWithLambdaInfo withLambdaInfo) {
         //Combine data from both vehicle and reservation data into rental response
         Vehicle vehicle = withLambdaInfo.getVehicle();
 
-        List<ReservationData> dataFromLambda = withLambdaInfo.getData();
+        List<Reservation> dataFromLambda = withLambdaInfo.getData();
 
         //Rental response is only set with vehicle data currently
         RentalResponse rentalResponse = rentalResponseHelperNonLambda(vehicle);
@@ -112,7 +112,7 @@ public class RentalController {
         return rentalResponse;
     }
 
-    public RentalResponse rentalResponseHelperNonLambda(Vehicle vehicle){
+    public RentalResponse rentalResponseHelperNonLambda(Vehicle vehicle) {
         RentalResponse rentalResponse = new RentalResponse();
         rentalResponse.setId(vehicle.getId());
         rentalResponse.setName(vehicle.getName());
@@ -126,20 +126,20 @@ public class RentalController {
         return rentalResponse;
     }
 
-    public ReservationData convertToReservationData(LambdaReservationCreateRequest request){
+    public Reservation convertToReservation(LambdaReservationCreateRequest request) {
         String id = "Jacobus";
 
-        return  new ReservationData(id, request.getCustomerId(),request.isPayed(),
-                request.getVehicleId(),request.getStartData(),request.getEndData());
+        return new Reservation(id, request.getCustomerId(), request.isPayed(),
+                request.getVehicleId(), request.getStartData(), request.getEndData());
     }
 
-    public ReservationData convertToReservationDataUpdate(String id, LambdaReservationCreateRequest request){
+    public Reservation convertToReservationUpdate(String id, LambdaReservationCreateRequest request) {
 
-        return  new ReservationData(id, request.getCustomerId(),request.isPayed(),
-                request.getVehicleId(),request.getStartData(),request.getEndData());
+        return new Reservation(id, request.getCustomerId(), request.isPayed(),
+                request.getVehicleId(), request.getStartData(), request.getEndData());
     }
 
-    public LambdaReservationResponse convertToReservationResponse(ReservationData data){
+    public LambdaReservationResponse convertToReservationResponse(Reservation data) {
         LambdaReservationResponse converted = new LambdaReservationResponse();
         converted.setId(data.getId());
         converted.setCustomerId(data.getCustomerId());

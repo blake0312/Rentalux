@@ -144,7 +144,6 @@ class RentalControllerTest {
     }
 
     @Test
-    @Order(1)
     void addNewReservations() throws Exception {
         // GIVEN
         LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
@@ -185,7 +184,6 @@ class RentalControllerTest {
     }
 
     @Test
-    @Order(2)
     void updateReservations() throws Exception {
         // GIVEN
         LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
@@ -222,7 +220,6 @@ class RentalControllerTest {
     }
 
     @Test
-    @Order(3)
     void getAllReservation() throws Exception {
 
         mapper.registerModule(new JavaTimeModule());
@@ -235,7 +232,6 @@ class RentalControllerTest {
     }
 
     @Test
-    @Order(4)
     void deleteReservation() throws Exception {
         // GIVEN
         String id = RentalControllerTest.id.getId();

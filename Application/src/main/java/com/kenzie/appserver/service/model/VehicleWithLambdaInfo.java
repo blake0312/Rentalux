@@ -6,9 +6,9 @@ import java.util.List;
 
 public class VehicleWithLambdaInfo {
     private final Vehicle vehicle;
-    private final List<ReservationData> data;
+    private final List<Reservation> data;
 
-    public VehicleWithLambdaInfo(Vehicle vehicle, List<ReservationData> data) {
+    public VehicleWithLambdaInfo(Vehicle vehicle, List<Reservation> data) {
         this.vehicle = vehicle;
         this.data = data;
     }
@@ -17,7 +17,7 @@ public class VehicleWithLambdaInfo {
         return vehicle;
     }
 
-    public List<ReservationData> getData() {
+    public List<Reservation> getData() {
         return data;
     }
 }
