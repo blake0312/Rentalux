@@ -38,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @IntegrationTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RentalControllerTest {
     @Autowired
     private MockMvc mvc;
