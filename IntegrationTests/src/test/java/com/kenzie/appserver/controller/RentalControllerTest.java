@@ -8,6 +8,7 @@ import com.kenzie.appserver.controller.model.LambdaReservationResponse;
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
 import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.RentalService;
+import com.kenzie.appserver.service.model.Reservation;
 import com.kenzie.appserver.service.model.Vehicle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +49,6 @@ class RentalControllerTest {
     private final MockNeat mockNeat = MockNeat.threadLocal();
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private static LambdaReservationResponse id;
 
     @Test
     public void getById_Exists() throws Exception {
@@ -179,28 +179,31 @@ class RentalControllerTest {
                 .andReturn();
         Gson gson = new Gson();
 
-        RentalControllerTest.id = gson.fromJson(mvcResult.getResponse().getContentAsString(),
+        LambdaReservationResponse lambdaReservationResponse = gson.fromJson(mvcResult.getResponse().getContentAsString(),
                 LambdaReservationResponse.class);
+
+        rentalService.deleteReservation(lambdaReservationResponse.getId());
+
     }
 
     @Test
     void updateReservations() throws Exception {
+        Reservation reservation = new Reservation("id", "customerId", false, "vehicleId", "startDate", "endDate");
+        Reservation reservationResponse = rentalService.addNewReservation(reservation);
         // GIVEN
         LambdaReservationCreateRequest lambdaReservationCreateRequest = new LambdaReservationCreateRequest();
-        // GIVEN
+        ;
 
-        String id = RentalControllerTest.id.getId();
-
-        lambdaReservationCreateRequest.setId(id);
+        lambdaReservationCreateRequest.setId(reservationResponse.getId());
         lambdaReservationCreateRequest.setCustomerId("customer");
-        lambdaReservationCreateRequest.setPayed(false);
+        lambdaReservationCreateRequest.setPayed(true);
         lambdaReservationCreateRequest.setVehicleId("vehicle");
         lambdaReservationCreateRequest.setStartData("start");
         lambdaReservationCreateRequest.setEndData("end");
 
         mapper.registerModule(new JavaTimeModule());
 
-        mvc.perform(put("/rental/reservation/{id}", id)
+        mvc.perform(put("/rental/reservation/{id}", reservationResponse.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(lambdaReservationCreateRequest)))
@@ -209,7 +212,7 @@ class RentalControllerTest {
                 .andExpect(jsonPath("customerId")
                         .value(is("customer")))
                 .andExpect(jsonPath("payed")
-                        .value(is(false)))
+                        .value(is(true)))
                 .andExpect(jsonPath("vehicleId")
                         .value(is("vehicle")))
                 .andExpect(jsonPath("startData")
@@ -217,28 +220,42 @@ class RentalControllerTest {
                 .andExpect(jsonPath("endData")
                         .value(is("end")))
                 .andExpect(status().is2xxSuccessful());
+
+        rentalService.deleteReservation(reservationResponse.getId());
+
     }
 
     @Test
     void getAllReservation() throws Exception {
+
+        Reservation reservation1 = new Reservation("id", "customerId", false, "vehicleId",
+                "startDate", "endDate");
+        Reservation reservationResponse1 = rentalService.addNewReservation(reservation1);
+        Reservation reservationResponse2 = rentalService.addNewReservation(reservation1);
+
+        // GIVEN
 
         mapper.registerModule(new JavaTimeModule());
 
         mvc.perform(get("/rental/reservation/all")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(status().is2xxSuccessful());
+        rentalService.deleteReservation(reservationResponse1.getId());
+        rentalService.deleteReservation(reservationResponse2.getId());
     }
 
     @Test
     void deleteReservation() throws Exception {
         // GIVEN
-        String id = RentalControllerTest.id.getId();
+        Reservation reservation1 = new Reservation("id", "customerId", false, "vehicleId",
+                "startDate", "endDate");
+        Reservation reservationResponse1 = rentalService.addNewReservation(reservation1);
 
         mapper.registerModule(new JavaTimeModule());
 
-        mvc.perform(delete("/rental/reservation/{id}", id))
+        mvc.perform(delete("/rental/reservation/{id}", reservationResponse1.getId()))
                 .andExpect(status().isNoContent());
     }
 }
