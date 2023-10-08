@@ -257,4 +257,27 @@ class RentalControllerTest {
         mvc.perform(delete("/rental/reservation/{id}", reservationResponse1.getId()))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void getAllCustomerReservations() throws Exception {
+        Reservation reservation1 = new Reservation("id", "customerId", false, "vehicleId",
+                "startDate", "endDate");
+        Reservation reservation2 = new Reservation("id", "snorlax", false, "vehicleId",
+                "startDate", "endDate");
+        Reservation reservationResponse1 = rentalService.addNewReservation(reservation1);
+        Reservation reservationResponse2 = rentalService.addNewReservation(reservation2);
+
+        // GIVEN
+
+        mapper.registerModule(new JavaTimeModule());
+
+        mvc.perform(get("/rental/reservation/customer/{id}", "snorlax")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(status().is2xxSuccessful());
+        rentalService.deleteReservation(reservationResponse1.getId());
+        rentalService.deleteReservation(reservationResponse2.getId());
+
+    }
 }

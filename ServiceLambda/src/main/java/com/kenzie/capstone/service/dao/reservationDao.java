@@ -117,4 +117,13 @@ public class reservationDao {
            throw new RuntimeException("Error updating", e.getCause());
         }
     }
+
+    public List<ReservationRecord> getReservationCustomerId(String id) {
+        DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
+            scanExpression.withFilterExpression("customerId = :value");
+            scanExpression.withExpressionAttributeValues(Map.of(":value", new AttributeValue().withS(id)));
+            scanExpression.withConsistentRead(false);
+
+        return mapper.scan(ReservationRecord.class, scanExpression);
+    }
 }
