@@ -4,9 +4,11 @@ import com.kenzie.appserver.config.CacheStore;
 import com.kenzie.appserver.repositories.RentalRepository;
 import com.kenzie.appserver.repositories.model.VehicleRecord;
 import com.kenzie.appserver.repositories.model.VehicleType;
+import com.kenzie.appserver.service.model.Reservation;
 import com.kenzie.appserver.service.model.Vehicle;
 import com.kenzie.appserver.service.model.VehicleWithLambdaInfo;
 import com.kenzie.capstone.service.client.LambdaServiceClient;
+import com.kenzie.capstone.service.model.ReservationData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +33,12 @@ public class RentalServiceTest {
         cache = mock(CacheStore.class);
         rentalService = new RentalService(rentalRepository, lambdaServiceClient, cache);
     }
-    /** ------------------------------------------------------------------------
-     *  exampleService.findById
-     *  ------------------------------------------------------------------------ **/
+
+    /**
+     * ------------------------------------------------------------------------
+     * exampleService.findById
+     * ------------------------------------------------------------------------
+     **/
 
     @Test
     void findById() {
@@ -69,7 +74,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    void addNewVehicle(){
+    void addNewVehicle() {
         // GIVEN
         String id = randomUUID().toString();
         List<String> images = new ArrayList<>();
@@ -86,9 +91,7 @@ public class RentalServiceTest {
         vehicleRecord.setMake("Porsche");
         vehicleRecord.setImages(images);
 
-        Vehicle newVehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(), vehicleRecord.getDescription(),
-                vehicleRecord.getRetalPrice(), vehicleRecord.getMileage(), vehicleRecord.getVehicleType(),
-                vehicleRecord.getMake(),vehicleRecord.getImages());
+        Vehicle newVehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(), vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(), vehicleRecord.getMileage(), vehicleRecord.getVehicleType(), vehicleRecord.getMake(), vehicleRecord.getImages());
 
         //when(rentalRepository.save(vehicleRecord)).thenReturn(vehicleRecord);
 
@@ -163,5 +166,22 @@ public class RentalServiceTest {
                 Assertions.assertTrue(false, "Vehicle that was not in the records!");
             }
         }
+    }
+
+    @Test
+    void addNewReservation() {
+        Reservation reservation1 = new Reservation("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        ReservationData reservationData = new ReservationData("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        when(lambdaServiceClient.setReservationData(any())).thenReturn(reservationData);
+
+        Reservation returned = rentalService.addNewReservation(reservation1);
+
+        Assertions.assertEquals(returned.getCustomerId(), reservation1.getCustomerId());
+        Assertions.assertEquals(returned.getId(), reservation1.getId());
+        Assertions.assertEquals(returned.getVehicleId(), reservation1.getVehicleId());
+        Assertions.assertEquals(returned.getStartData(), reservation1.getStartData());
+
     }
 }
