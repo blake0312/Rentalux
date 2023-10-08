@@ -96,6 +96,13 @@ public class RentalService {
         return data;
     }
 
+    public List<Reservation> getAllCustomerReservations(String id) {
+        return lambdaServiceClient.getReservationData("customerId," + id)
+                .stream()
+                .map(this::convertToReservation)
+                .collect(Collectors.toList());
+    }
+
     public Vehicle convertToVehicle(VehicleRecord vehicleRecord) {
         Vehicle vehicle = new Vehicle(vehicleRecord.getId(), vehicleRecord.getName(),
                 vehicleRecord.getDescription(), vehicleRecord.getRetalPrice(),

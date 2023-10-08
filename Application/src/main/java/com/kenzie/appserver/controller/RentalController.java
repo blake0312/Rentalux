@@ -88,6 +88,15 @@ public class RentalController {
                 .collect(Collectors.toList()));
     }
 
+    @GetMapping("/reservation/customer/{id}")
+    public ResponseEntity<List<LambdaReservationResponse>> getAllCustomerReservations(@PathVariable String id) {
+        List<Reservation> reservations = rentalService.getAllCustomerReservations(id);
+
+        return ResponseEntity.ok(reservations.stream()
+                .map(this::convertToReservationResponse)
+                .collect(Collectors.toList()));
+    }
+
 
     public Vehicle convertToVehicle(RentalCreateRequest rentalCreateRequest) {
         Vehicle vehicle = new Vehicle(UUID.randomUUID().toString(), rentalCreateRequest.getName(),

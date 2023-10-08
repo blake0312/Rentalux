@@ -26,7 +26,15 @@ public class ReservationService {
     }
 
     public List<ReservationData> getReservationData(String id) {
-        List<ReservationRecord> records = reservationDao.getReservationData(id);
+        List<ReservationRecord> records = Collections.emptyList();
+        List<String> split = List.of(id.split(","));
+        if (split.size() == 2) {
+            if (split.get(0).equals("customerId")) {
+                records = reservationDao.getReservationCustomerId(split.get(1));
+            }
+        } else {
+            records = reservationDao.getReservationData(id);
+        }
         if (records.size() > 0) {
             return records.stream()
                     .map(s -> new ReservationData(s.getId(), s.getCustomerId(), s.isPayed(),
