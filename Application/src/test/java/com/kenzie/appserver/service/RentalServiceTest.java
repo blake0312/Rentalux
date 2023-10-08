@@ -184,4 +184,21 @@ public class RentalServiceTest {
         Assertions.assertEquals(returned.getStartData(), reservation1.getStartData());
 
     }
+
+    @Test
+    void updateReservation() {
+        Reservation reservation1 = new Reservation("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        ReservationData reservationData = new ReservationData("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        when(lambdaServiceClient.updateReservationData(any())).thenReturn(reservationData);
+
+        Reservation returned = rentalService.updateReservation(reservation1);
+
+        Assertions.assertEquals(returned.getCustomerId(), reservation1.getCustomerId());
+        Assertions.assertEquals(returned.getId(), reservation1.getId());
+        Assertions.assertEquals(returned.getVehicleId(), reservation1.getVehicleId());
+        Assertions.assertEquals(returned.getStartData(), reservation1.getStartData());
+
+    }
 }
