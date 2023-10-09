@@ -3,19 +3,20 @@ package com.kenzie.capstone.service;
 import com.kenzie.capstone.service.dao.reservationDao;
 import com.kenzie.capstone.service.model.ReservationData;
 import com.kenzie.capstone.service.model.ReservationRecord;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -119,5 +120,45 @@ class ReservationServiceTest {
 
         // THEN
         verify(reservationDao, times(1)).deleteReservation(idCaptor.capture());
+    }
+    @Test
+    void reservationsForCustomerIdTest(){
+        String id = "fakeid";
+        String data = "somedata";
+
+        ReservationRecord record = new ReservationRecord();
+        record.setId(id);
+        record.setCustomerId(data);
+        record.setPayed(true);
+        record.setVehicleId("vehicleId");
+        record.setStartData("start");
+        record.setEndData("end");
+
+        ReservationRecord record2 = new ReservationRecord();
+        record2.setId(id);
+        record2.setCustomerId(data);
+        record2.setPayed(true);
+        record2.setVehicleId("vehicleId");
+        record2.setStartData("start");
+        record2.setEndData("end");
+
+        List<ReservationRecord> records = new ArrayList<>();
+        records.add(record);
+        records.add(record2);
+
+        when(reservationDao.getReservationCustomerId(any())).thenReturn(records);
+
+        List<ReservationData> dataList = reservationService.getReservationData("customerId," + "life");
+
+        Assertions.assertEquals(2,dataList.size());
+
+    }
+    @Test
+    void getReservationForCustomerIdTestInvalid() {
+
+        List<ReservationData> dataList = reservationService.getReservationData("GhostFace," + "life");
+
+        Assertions.assertEquals(0, dataList.size());
+
     }
 }
