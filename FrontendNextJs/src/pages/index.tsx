@@ -14,8 +14,8 @@ export default function Home() {
 
         <div className="flex-1">
           <section className="py-12 flex flex-col items-center text-center gap-6 mt-2">
-            <h1 className="text-4xl font-bold">Welcome To Rentalux</h1>
-            <p className="text-2xl text-muted-foreground max-w-2xl">
+            <h1 className="text-4xl font-bold font-sans">Welcome To Rentalux</h1>
+            <p className="text-2xl text-muted-foreground max-w-2xl font-serif">
               Experience the ultimate convenience of our car rental service,
               where we simplify your journey with an effortless booking process designed with ease of use.
             </p>
@@ -30,10 +30,12 @@ export default function Home() {
         <div className="flex-1 -mt-12">
           <div className="car__image-container">
             <div className={`car__image slide-from-right`}>
-              <Image src="/hero.png" alt="hero"
+              <Image src="/r34.png" alt="hero"
                 fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 priority={true}
-                className="object-contain" />
+                className="object-contain"
+                unoptimized={true} 
+                />
             </div>
           </div>
         </div>
