@@ -201,4 +201,41 @@ public class RentalServiceTest {
         Assertions.assertEquals(returned.getStartData(), reservation1.getStartData());
 
     }
+
+    @Test
+    void getAllReservation() {
+        ReservationData reservationData = new ReservationData("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        ReservationData reservationData1 = new ReservationData("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        when(cache.get(any())).thenReturn(null);
+
+        List<ReservationData> reservationDataList = new ArrayList<>();
+        reservationDataList.add(reservationData);
+        reservationDataList.add(reservationData1);
+
+        when(lambdaServiceClient.getReservationData("all")).thenReturn(reservationDataList);
+
+        List<Reservation> reservations = rentalService.getAllReservation("all");
+
+        Assertions.assertEquals(2,reservations.size());
+
+    }
+    @Test
+    void getAllReservationCacheHit() {
+        Reservation reservationData = new Reservation("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        Reservation reservationData1 = new Reservation("id", "customerId", false, "vehicleId", "startDate", "endDate");
+
+        List<Reservation> reservationDataList = new ArrayList<>();
+        reservationDataList.add(reservationData);
+        reservationDataList.add(reservationData1);
+
+        when(cache.get(any())).thenReturn(reservationDataList);
+
+
+        List<Reservation> reservations = rentalService.getAllReservation("all");
+
+        Assertions.assertEquals(2, reservations.size());
+    }
 }
