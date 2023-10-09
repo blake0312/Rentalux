@@ -41,6 +41,8 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import DatePickerFormUpdate from "./UpdateReservationForm"
 import { Icons } from "@/constants"
 import { useLoading } from "../LoadingContext"
+import { useProgressLoading } from "../ProgressLoadingContext"
+import { ProgressTable } from "../progresstable"
 
 export async function fetchData(): Promise<Reservation[]> {
   const url = "/rental/reservation/all";
@@ -71,8 +73,8 @@ export type Reservation = {
 
 
 export default function DataTable() {
-  const { loading, loadingRowId, setGlobalLoading } = useLoading();
-  
+  const { loading, loadingRowId, setGlobalLoading} = useLoading();
+  const { progressLoading, setProgressGlobalLoading } = useProgressLoading();
   const updateReservation = (updatedReservation: Reservation) => {
     // Find the index of the reservation in data array
     const updatedIndex = data.findIndex((r) => r.id === updatedReservation.id);
@@ -126,7 +128,7 @@ export default function DataTable() {
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("customerId")}</div>,
+      cell: ({ row }) => <div className="">{row.getValue("customerId")}</div>,
     },
     {
       accessorKey: "vehicleId",
@@ -141,7 +143,7 @@ export default function DataTable() {
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("vehicleId")}</div>,
+      cell: ({ row }) => <div className="">{row.getValue("vehicleId")}</div>,
     },
     {
       accessorKey: "startData",
@@ -187,7 +189,7 @@ export default function DataTable() {
               <DropdownMenuTrigger asChild>
                 {loading && loadingRowId === row.original.id ? (<Icons.spinner className="h-8 w-8 animate-spin p-0"/>)
                   :
-                  <Button variant="ghost" className="h-8 w-8 p-0" >
+                  <Button variant="ghost" className="h-8 w-8 p-0" disabled={loading} >
                     <span className="sr-only">Open menu</span>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -255,11 +257,13 @@ export default function DataTable() {
   useEffect(() => {
     async function fetchDataAndStore() {
       try {
+        setProgressGlobalLoading(true);
         const data = await fetchData();
         setFetchedData(data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+      setProgressGlobalLoading(false);
     }
 
     fetchDataAndStore();
@@ -351,34 +355,46 @@ export default function DataTable() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
+          {progressLoading ? (
+            <TableBody>
+             <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <div className="flex items-center justify-center">
+                    <ProgressTable />
+                  </div>
                 </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+             </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          )}
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">

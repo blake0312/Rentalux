@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { AppProps } from 'next/app'
 import { Toaster } from '@/components/ui/toaster';
 import {LoadingProvider} from '../custom components/LoadingContext';
-
+import {ProgressLoadingProvider} from '../custom components/ProgressLoadingContext';
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <div >
@@ -21,7 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
       <ClerkProvider {...pageProps}>
         <LoadingProvider>
+        <ProgressLoadingProvider>
         <Component {...pageProps} />
+        </ProgressLoadingProvider>
         </LoadingProvider>
       </ClerkProvider>
       </ThemeProvider>

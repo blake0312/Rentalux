@@ -27,6 +27,10 @@ const nextConfig = {
         source: "/rental/reservation/all",
         destination: "http://localhost:5001/rental/reservation/all",
       },
+      {
+        source: "/rental/reservation/customer/:id",
+        destination: "http://localhost:5001/rental/reservation/customer/:id",
+      },
     ];
   },
 };
