@@ -49,6 +49,10 @@ public class RentalService {
         return vehicle;
     }
 
+    public void deleteVehicle(String id) {
+        rentalRepository.deleteById(id);
+    }
+
     public List<Vehicle> getAllVehicles() {
         Iterable<VehicleRecord> vehicleRecords = rentalRepository.findAll();
         List<Vehicle> vehicles = new ArrayList<>();
