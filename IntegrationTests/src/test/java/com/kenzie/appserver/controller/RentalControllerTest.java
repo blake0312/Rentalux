@@ -6,6 +6,7 @@ import com.kenzie.appserver.IntegrationTest;
 import com.kenzie.appserver.controller.model.LambdaReservationCreateRequest;
 import com.kenzie.appserver.controller.model.LambdaReservationResponse;
 import com.kenzie.appserver.controller.model.RentalCreateRequest;
+import com.kenzie.appserver.controller.model.RentalResponse;
 import com.kenzie.appserver.repositories.model.VehicleType;
 import com.kenzie.appserver.service.RentalService;
 import com.kenzie.appserver.service.model.Reservation;
@@ -66,6 +67,8 @@ class RentalControllerTest {
                 .andExpect(jsonPath("name")
                         .value(is(name)))
                 .andExpect(status().is2xxSuccessful());
+
+        rentalService.deleteVehicle(persistedVehicle.getId());
     }
 
     @Test
@@ -89,7 +92,7 @@ class RentalControllerTest {
 
         mapper.registerModule(new JavaTimeModule());
 
-        mvc.perform(post("/rental")
+        MvcResult mvcResult = mvc.perform(post("/rental")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(rentalCreateRequest)))
@@ -109,7 +112,13 @@ class RentalControllerTest {
                         .value(is(make)))
                 .andExpect(jsonPath("images")
                         .value(is(images)))
-                .andExpect(status().is2xxSuccessful());
+                .andExpect(status().is2xxSuccessful())
+                .andReturn();
+
+        Gson gson = new Gson();
+        RentalResponse response = gson.fromJson(mvcResult.getResponse().getContentAsString(), RentalResponse.class);
+
+        rentalService.deleteVehicle(response.getId());
     }
 
     @Test
@@ -122,24 +131,19 @@ class RentalControllerTest {
         String make = mockNeat.strings().valStr();
         List<String> images = Collections.emptyList();
 
-        RentalCreateRequest rentalCreateRequest = new RentalCreateRequest();
-        rentalCreateRequest.setName(name);
-        rentalCreateRequest.setDescription(description);
-        rentalCreateRequest.setRetailPrice(retailPrice);
-        rentalCreateRequest.setMileage(mileage);
-        rentalCreateRequest.setVehicleType(vehicleType);
-        rentalCreateRequest.setMake(make);
-        rentalCreateRequest.setImages(images);
-
         mapper.registerModule(new JavaTimeModule());
 
-        rentalService.addNewVehicle(new Vehicle(UUID.randomUUID().toString(), name, description, retailPrice, mileage, vehicleType, make, images));
+        Vehicle vehicle1 = rentalService.addNewVehicle(new Vehicle(UUID.randomUUID().toString(), name, description, retailPrice, mileage, vehicleType, make, images));
+        Vehicle vehicle2 = rentalService.addNewVehicle(new Vehicle(UUID.randomUUID().toString(), name, description, retailPrice, mileage, vehicleType, make, images));
 
         mvc.perform(get("/rental/all")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(status().is2xxSuccessful());
+
+        rentalService.deleteVehicle(vehicle1.getId());
+        rentalService.deleteVehicle(vehicle2.getId());
     }
 
     @Test
