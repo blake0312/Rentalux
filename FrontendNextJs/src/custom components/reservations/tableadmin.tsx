@@ -1,5 +1,4 @@
 "use client"
-
 import { toast } from "@/components/ui/use-toast"
 import * as React from "react"
 import {
@@ -112,7 +111,9 @@ export default function DataTable() {
       accessorKey: "payed",
       header: "Paid",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("payed")}</div>
+        <div className={row.getValue("payed") ? 'paid' : 'unpaid'}>
+          {row.getValue("payed")!.toString()}
+        </div>
       ),
     },
     {
