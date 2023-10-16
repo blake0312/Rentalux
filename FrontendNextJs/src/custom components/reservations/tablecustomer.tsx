@@ -1,5 +1,6 @@
 "use client"
 
+import  getStripe  from '../../custom components/get-stripejs';
 import { toast } from "@/components/ui/use-toast"
 import * as React from "react"
 import {
@@ -117,7 +118,9 @@ export default function DataTableCustomer() {
       accessorKey: "payed",
       header: "Paid",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("payed")}</div>
+        <div className={row.getValue("payed") ? 'paid' : 'unpaid'}>
+          {row.getValue("payed")!.toString()}
+        </div>
       ),
     },
 
@@ -193,9 +196,12 @@ export default function DataTableCustomer() {
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
                   <DropdownMenuItem>
-                    Update
+                  Update
                   </DropdownMenuItem>
                 </DialogTrigger>
+                <DropdownMenuItem onClick={() => makePayRequest(reservation)}>
+                  Pay
+                </DropdownMenuItem>
               </DropdownMenuContent>
 
             </DropdownMenu>
@@ -245,6 +251,40 @@ export default function DataTableCustomer() {
     }
   };
 
+  
+  const makePayRequest = async (reservation: Reservation) => {
+    console.log('Entering makePayRequest');
+    try {
+  
+      // Call your API route to create a Checkout Session with the calculated payment amount
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reservation: reservation}),
+      });
+  
+      const { sessionId } = await response.json();
+  
+      // Redirect to Stripe Checkout
+      const stripe = await getStripe();
+      const result = (stripe as any).redirectToCheckout({
+        sessionId,
+      });
+  
+      // Check if redirectToCheckout was successful
+      if (result.error) {
+        console.error(result.error.message);
+        // Handle error
+      } else {
+        console.log('Exiting makePayRequest');
+      }
+    } catch (error) {
+      console.error('Error creating Checkout Session:', error);
+      // Handle error
+    }
+  };
 
 
   const [fetchedData, setFetchedData] = useState<Reservation[] | null>(null);
