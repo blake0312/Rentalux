@@ -50,7 +50,7 @@ export default function vehicles(){
         <Loading />
       ) : (
         <main className="m-24 flex justify-center">
-        <div className="grid grid-cols-3  gap-12">
+        <div className="grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3 custom-xs:grid-cols-1 gap-12">
         {vehicles.map((vehicle) => (
           <Link href={`/${vehicle.id}`} key={vehicle.id}>
             <div className="p-8 bg-gray-50 hover:shadow-md hover:shadow-emerald-700">

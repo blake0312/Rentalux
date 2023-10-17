@@ -27,7 +27,7 @@ export default function TabsAdmin() {
           <VehicleForm></VehicleForm>
         </TabsContent>
 
-        <TabsContent value="reservations" className=" flex-grow w-[850px]">
+        <TabsContent value="reservations" className=" flex-grow custom-sm:w-full md:w-[850px]">
           <TableAdmin />
         </TabsContent>
 
