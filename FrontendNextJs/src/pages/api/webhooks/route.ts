@@ -17,7 +17,7 @@ const handleSuccessfulPayment = async (reservation : Reservation) => {
       "endData": reservation.endData,
     };
 
-    const url = `http://localhost:5001/rental/reservation/${reservation.id}`;
+    const url = `https://climbing-rapidly-roughy.ngrok-free.app/rental/reservation/${reservation.id}`;
     const response = await fetch(url, {
       method: 'PUT',
       headers: {

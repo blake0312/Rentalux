@@ -7,7 +7,11 @@ import LoadingSingle from "../custom components/loadingsingle";
 const getData = async (id: string | string[]) => {
   try {
     const url = `/rental/${id}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    });
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
