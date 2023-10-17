@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const ngrokUrl = "https://7891-2600-1700-3bac-3610-b924-8bde-a673-fa05.ngrok-free.app";
+const ngrokUrl = "https://climbing-rapidly-roughy.ngrok-free.app";
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
@@ -26,11 +26,11 @@ const nextConfig = {
       },
       {
         source: "/rental/reservation/all",
-        destination: "http://localhost:5001/rental/reservation/all",
+        destination: `${ngrokUrl}/rental/reservation/all`,
       },
       {
         source: "/rental/reservation/customer/:id",
-        destination: "http://localhost:5001/rental/reservation/customer/:id",
+        destination: `${ngrokUrl}/rental/reservation/customer/:id`,
       },
     ];
   },
