@@ -44,7 +44,7 @@ export default function Vehicle() {
             <Menu/>
           </nav>
     <main className="m-24 flex justify-center">
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 custom-xs:grid-cols-1 gap-6">
       {vehicleData ? 
       <>
         <div className="p-8 bg-gray-50 hover:shadow-md hover:shadow-emerald-700">

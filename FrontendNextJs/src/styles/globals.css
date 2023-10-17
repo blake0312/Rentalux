@@ -50,10 +50,17 @@
 }
 
 
+@media (max-width: 640px) {
+  .custom-xs\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
 
-
-
-
+@media (max-width: 640px) {
+  .custom-sm\:w-full {
+    width: 100%; /* Set the width as needed for screens 640px or lower */
+  }
+}
 .car__image-container {
   @apply xl:flex-[1.5] flex justify-end items-end w-full xl:h-screen;
 }
