@@ -7,10 +7,10 @@ export default function logo(){
         <Image
           src='/RL2.svg'
           alt='RL2'
-          width={60}
-          height={30}
+          width={50}
+          height={50}
           className='object-contain'
-          loading="eager"
+          style={{ width: '50', height: 'auto'}}
         />
       </Link>
       </div>
