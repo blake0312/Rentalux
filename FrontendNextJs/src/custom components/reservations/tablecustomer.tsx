@@ -51,11 +51,7 @@ export async function fetchData(id: any ): Promise<Reservation[]> {
   const url = `/rental/reservation/customer/${id}`;
 
   try {
-    const response = await fetch(url, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true',
-      },
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
