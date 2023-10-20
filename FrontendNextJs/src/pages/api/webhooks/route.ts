@@ -17,7 +17,7 @@ const handleSuccessfulPayment = async (reservation : Reservation) => {
       "endData": reservation.endData,
     };
 
-    const url = `https://climbing-rapidly-roughy.ngrok-free.app/rental/reservation/${reservation.id}`;
+    const url = `http://rentalux-env.eba-hm7aedzb.us-east-2.elasticbeanstalk.com/rental/reservation/${reservation.id}`;
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
