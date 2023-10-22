@@ -49,6 +49,11 @@
   }
 }
 
+@media (max-width: 550px) {
+  .logo-wrapper {
+    min-width: 40px; 
+  }
+}
 
 @media (max-width: 640px) {
   .custom-xs\:grid-cols-1 {

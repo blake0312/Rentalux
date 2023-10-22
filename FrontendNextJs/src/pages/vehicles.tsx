@@ -7,11 +7,7 @@ import font from'../custom components/font.module.css'
 const getData = async() =>{
     try {
         const url = '/rental/all'; 
-        const response = await fetch(url, {
-            headers: {
-                'ngrok-skip-browser-warning': 'true',
-            },
-        });
+        const response = await fetch(url);
     
         if (!response.ok) {
           throw new Error('Network response was not ok');
