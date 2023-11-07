@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const awsUrl = "http://rentalux-env.eba-hm7aedzb.us-east-2.elasticbeanstalk.com";
+const awsUrl = "http://rentalux-env.eba-tq5h4ncr.us-east-1.elasticbeanstalk.com";
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
